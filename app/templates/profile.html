@@ -1,7 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-  Salut {{ name }}!
-</h1>
+<div class="column is-4 is-offset-4">
+    <div class="card">
+        <div class="card-image">
+            <figure class="image is-4by3">
+                <img src="https://seemetrik.com/wp-content/uploads/2018/02/portrait-sigma-50mm-f14-hsm-canon-eos-5d-mk2-face-Favimcom-473053_zpsd55e8d8e-1.jpg"
+                    alt="Placeholder image">
+            </figure>
+        </div>
+        <div class="card-content">
+            <div class="content">
+                <p class="title is-4">{{ name }}</p>
+                <p class="subtitle is-6">{{ email }}</p>
+            </div>
+
+            <div class="content">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Phasellus nec iaculis mauris. <a>@bulmaio</a>.
+                <a href="#">#css</a> <a href="#">#responsive</a>
+                <br>
+                <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+            </div>
+        </div>
+        <footer class="card-footer">
+            <a href="#" class="card-footer-item">Save</a>
+            <a href="{{ url_for('auth.logout') }}" class="card-footer-item">Logout</a>
+        </footer>
+    </div>
+</div>
 {% endblock %}

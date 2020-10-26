@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="columns is-vcentered">
+    <div class="column">
+        <h1 class="title has-text-left">Bonjour <i>{{ name }}</i> 👋</h1>
+        <div class="block">
+            <h1 class="title has-text-left">envie d'utiliser notre service ?</h1>
+        </div>
+        <div class="block">
+            <p class="subtitle has-text-left">
+                Ajoutez simplement une image et laissez notre outil faire le travail.
+            </p>
+            <p class="subtitle has-text-left">
+                Vos images sont stockées 24h sur nos serveurs avant d'être supprimées.
+            </p>
+        </div>
+    </div>
+    <div class="column">
+        <div class="box">
+            <div class="block">
+                <div class="field">
+                    <figure class="image is-3by2">
+                        <img id="thumbnail">
+                    </figure>
+                </div>
+            </div>
+
+            <div class="block">
+                <div id="file-js-example" class="file has-name is-fullwidth">
+                    <label class="file-label">
+                        <input class="file-input" type="file" accept="image/*" onchange="showMyImage(this)" value="">
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">
+                                Choisissez un fichier...
+                            </span>
+                        </span>
+                        <span class="file-name">
+                            Pas de fichier
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <div class="block">
+                <button class="button is-fullwidth is-dark">Envoi</button>
+            </div>
+            <div class="block">
+                <button class="button is-fullwidth is-danger">Nettoyer l'image</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //function for displaying the image upload preview
+    function showMyImage(fileInput) {
+        var files = fileInput.files;
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var imageType = /image.*/;
+            if (!file.type.match(imageType)) {
+                continue;
+            }
+            var img = document.getElementById("thumbnail");
+            img.file = file;
+            var reader = new FileReader();
+            reader.onload = (function (aImg) {
+                return function (e) {
+                    aImg.src = e.target.result;
+                };
+            })(img);
+            reader.readAsDataURL(file);
+        }
+
+        const fileName = document.querySelector('#file-js-example .file-name');
+        fileName.textContent = files[0].name;
+
+    }
+
+</script>
+
+{% endblock %}

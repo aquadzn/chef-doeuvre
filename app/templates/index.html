@@ -1,19 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="columns">
+<div class="columns is-vcentered">
     <div class="column">
-        <h1 class="title">
-            Flask Login Example
-        </h1>
-        <h2 class="subtitle">
-            Easy authentication and authorization in Flask.
-        </h2>
+        <h1 class="title has-text-left">Bonjour  👋</h1>
+        <div class="block">
+            <h1 class="title has-text-left">envie d'utiliser notre service ?</h1>
+        </div>
+        <div class="block">
+            <p class="subtitle has-text-left">
+                Ajoutez simplement une image et laissez notre outil faire le travail.
+            </p>
+            <p class="subtitle has-text-left">
+                Vos images sont stockées 24h sur nos serveurs avant d'être supprimées.
+            </p>
+        </div>
     </div>
+
     <div class="column">
-        <figure class="image is-4by3">
-            <img src="https://images.unsplash.com/photo-1603690969587-31fedd1009c4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80">
-        </figure>
+        <div class="box">
+            <figure class="image is-4by3">
+                <img
+                    src="https://images.unsplash.com/photo-1603690969587-31fedd1009c4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80">
+            </figure>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -13,4 +13,10 @@ def index():
 @main.route("/profile")
 @login_required
 def profile():
-    return render_template("profile.html", name=current_user.name)
+    return render_template("profile.html", name=current_user.name, email=current_user.email)
+
+
+@main.route("/upload")
+@login_required
+def upload():
+    return render_template("upload.html", name=current_user.name)
