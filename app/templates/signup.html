@@ -14,26 +14,24 @@
             {% endwith %}
             <form method="POST" action="/signup">
                 <div class="field">
+                    <label class="label">Pseudonyme</label>
+                    <div class="control has-icons-left">
+                        <input class="input is-large" type="text" name="username" placeholder="jean" autofocus="">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-user-circle"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="field">
                     <label class="label">Adresse mail</label>
                     <div class="control has-icons-left">
-                        <input class="input is-large" type="email" name="email" placeholder="hello@gmail.com"
+                        <input class="input is-large" type="email" name="email" placeholder="jean@gmail.com"
                             autofocus="">
                         <span class="icon is-small is-left">
                             <i class="fas fa-envelope"></i>
                         </span>
                     </div>
                 </div>
-
-                <div class="field">
-                    <label class="label">Prénom</label>
-                    <div class="control has-icons-left">
-                        <input class="input is-large" type="text" name="name" placeholder="Jean" autofocus="">
-                        <span class="icon is-small is-left">
-                            <i class="fas fa-user"></i>
-                        </span>
-                    </div>
-                </div>
-
                 <div class="field">
                     <label class="label">Mot de passe</label>
                     <div class="control has-icons-left">

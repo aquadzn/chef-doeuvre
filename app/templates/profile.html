@@ -4,14 +4,14 @@
 <div class="column is-4 is-offset-4">
     <div class="card">
         <div class="card-image">
-            <figure class="image is-4by3">
-                <img src="https://seemetrik.com/wp-content/uploads/2018/02/portrait-sigma-50mm-f14-hsm-canon-eos-5d-mk2-face-Favimcom-473053_zpsd55e8d8e-1.jpg"
+            <figure class="image is-256x256">
+                <img src="{{url_for('static', filename='img/user.png')}}"
                     alt="Placeholder image">
             </figure>
         </div>
         <div class="card-content">
             <div class="content">
-                <p class="title is-4">{{ name }}</p>
+                <p class="title is-4">{{ username }}</p>
                 <p class="subtitle is-6">{{ email }}</p>
             </div>
 

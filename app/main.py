@@ -20,7 +20,13 @@ def index():
 @main.route("/profile")
 @login_required
 def profile():
-    return render_template("profile.html", name=current_user.name, email=current_user.email)
+    return render_template("profile.html", username=current_user.username, email=current_user.email)
+
+
+@main.route("/images")
+@login_required
+def images():
+    return render_template("images.html")
 
 
 @main.route("/upload", methods=["GET", "POST"])
@@ -41,9 +47,9 @@ def upload():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(os.path.abspath("app/uploads/"), filename))
+            file.save(os.path.join(os.path.abspath("app/static/uploads/"), filename))
 
             flash("Fichier envoyé!", "success")
             return redirect(request.url)
 
-    return render_template("upload.html", name=current_user.name)
+    return render_template("upload.html", username=current_user.username)
