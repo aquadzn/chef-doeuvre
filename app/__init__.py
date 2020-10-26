@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
@@ -12,6 +14,7 @@ def create_app():
 
     app.config["SECRET_KEY"] = "JRPAKJ8492994xjKJ3"
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
+    app.config["UPLOAD_FOLDER"] = os.path.abspath("app/uploads/")
 
     db.init_app(app)
 
