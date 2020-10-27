@@ -1,5 +1,111 @@
 {% extends "admin/base.html" %}
 
 {% block content %}
-<h1 class="title">DASHBOARD</h1>
+
+<h1 class="title">Tableau de bord</h1>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="notification is-success">
+    <button class="delete"></button>
+    {{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="columns is-mobile">
+    <div class="column">
+        <h1 class="subtitle">Utilisateurs</h1>
+        {% if users|length %}
+        <div class="box">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Pseudonyme</th>
+                        <th>Adresse mail</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <th>{{ user.id }}</th>
+                        <td>
+                            {{ user.username }}
+                        </td>
+                        <td>
+                            {{ user.email }}
+                        </td>
+                        <td>
+                            <form action="/admin/dashboard/delete_user/{{ user.id }}" method="post">
+                                <input class="button is-danger is-light" type="submit" value="Supprimez le compte"
+                                    input>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="block">
+            <p class="subtitle">Pas de compte enregistrés</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="column">
+        <h1 class="subtitle">Fichiers</h1>
+        {% if files|length %}
+        <div class="box">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Utilisateur</th>
+                        <th>Aperçu</th>
+                        <th>Nom de fichier</th>
+                        <th>Date d'envoi</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files %}
+                    <tr>
+                        <th>{{ file.id }}</th>
+                        <td>
+                            <i>{{ file.username }}</i>
+                        </td>
+                        <td>
+                            <figure class="image is-64x64">
+                                <img src="../../static/uploads/{{ file.filename }}" alt="{{ file.filename }}">
+                            </figure>
+                        </td>
+                        <td>
+                            <i>{{ file.filename }}</i>
+                        </td>
+                        <td>
+                            {{ file.date }}
+                        </td>
+                        <td>
+                            <form action="/admin/dashboard/delete_file/{{ file.id }}" method="post">
+                                <input class="button is-danger is-light" type="submit" value="Supprimez l'image" input>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+
+        <div class="block">
+            <p class="subtitle">Pas de fichier enregistrés</p>
+        </div>
+
+        {% endif %}
+    </div>
+</div>
+
 {% endblock %}

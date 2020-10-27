@@ -22,42 +22,43 @@
 {% endwith %}
 
 {% if files|length %}
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Aperçu</th>
-            <th>Nom de fichier</th>
-            <th>Date d'envoi</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for file in files %}
-        <tr>
-            <th>{{ file.id }}</th>
-            <td>
-                <figure class="image is-64x64">
-                    <img src="../static/uploads/{{ file.filename }}" alt="{{ file.filename }}">
-                </figure>
-            </td>
-            <td>
-                <i>{{ file.filename }}</i>
-            </td>
-            <td>
-                {{ file.date }}
-            </td>
-            <td>
-                <a href="../static/uploads/{{ file.filename }}" download>Téléchargez l'image</a>
-                <form action="/images/delete/{{ file.id }}" method="post">
-                    <input type="submit" value="Supprimez l'image"></input>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
+<div class="box">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Aperçu</th>
+                <th>Nom de fichier</th>
+                <th>Date d'envoi</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <th>{{ file.id }}</th>
+                <td>
+                    <figure class="image is-64x64">
+                        <img src="../static/uploads/{{ file.filename }}" alt="{{ file.filename }}">
+                    </figure>
+                </td>
+                <td>
+                    <i>{{ file.filename }}</i>
+                </td>
+                <td>
+                    {{ file.date }}
+                </td>
+                <td>
+                    <a href="../static/uploads/{{ file.filename }}" download>Téléchargez l'image</a>
+                    <form action="/images/delete/{{ file.id }}" method="post">
+                        <input type="submit" class="button is-danger" value="Supprimez l'image"></input>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% else %}
 
 <div class="block">

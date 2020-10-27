@@ -3,7 +3,7 @@
 {% block content %}
 <div class="columns is-vcentered">
     <div class="column">
-        <h1 class="title has-text-left">Bonjour  👋</h1>
+        <h1 class="title has-text-left">Bonjour 👋</h1>
         <div class="block">
             <h1 class="title has-text-left">envie d'utiliser notre service ?</h1>
         </div>
@@ -17,13 +17,8 @@
         </div>
     </div>
 
-    <div class="column">
-        <div class="box">
-            <figure class="image is-4by3">
-                <img
-                    src="https://images.unsplash.com/photo-1603690969587-31fedd1009c4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80">
-            </figure>
-        </div>
+    <div class="column is-5">
+        <img src="{{url_for('static', filename='img/welcome.png')}}" alt="welcome.png">
     </div>
 </div>
 {% endblock %}
