@@ -6,3 +6,4 @@ __pycache__
 .vscode
 app/db.sqlite
 app/static/uploads
+app/static/results

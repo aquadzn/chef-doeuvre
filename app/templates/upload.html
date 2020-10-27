@@ -39,7 +39,7 @@
                                     <i class="fas fa-upload"></i>
                                 </span>
                                 <span class="file-label">
-                                    Choisissez un fichier...
+                                    Choisissez un fichier (max. 2MB)
                                 </span>
                             </span>
                             <span class="file-name">
@@ -49,10 +49,7 @@
                     </div>
                 </div>
                 <div class="block">
-                    <button class="button is-fullwidth is-dark">Envoi</button>
-                </div>
-                <div class="block">
-                    <button class="button is-fullwidth is-danger">Nettoyer l'image</button>
+                    <input type="submit" class="button is-fullwidth is-dark" value="Envoi"></input>
                 </div>
                 {% with error = get_flashed_messages(category_filter=["error"]) %}
                 {% if error %}

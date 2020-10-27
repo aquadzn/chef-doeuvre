@@ -21,6 +21,7 @@ flask run
 * partie ML
 * analyse avec chart.js
 * dashboard admin
+* logger Flask entre différents Blueprints
 * monitoring logs (sur le dashboard admin?)
 * login avec username ou mail (optionnel)
 
