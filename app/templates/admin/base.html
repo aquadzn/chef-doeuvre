@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mon projet Chef d'Oeuvre</title>
+    <title>Admin Page</title>
     <link rel="shortcut icon" href="{{url_for('static', filename='img/favicon.ico')}}" />
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
     <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&family=Rubik:wght@400;700&display=swap"
@@ -49,44 +49,10 @@
                     </div>
                     <div id="navMenu" class="navbar-menu">
                         <div class="navbar-end">
-                            <a href="{{ url_for('main.index') }}" class="navbar-item">
-                                Accueil
+                            {% if current_user.is_authenticated and current_user.id == 1 %}
+                            <a href="{{ url_for('admin.dashboard') }}" class="navbar-item">
+                                Tableau de bord
                             </a>
-                            {% if current_user.is_authenticated and current_user.id != 1 %}
-                            <a href="{{ url_for('main.profile') }}" class="navbar-item">
-                                Mon profil
-                            </a>
-                            <a href="{{ url_for('main.images') }}" class="navbar-item">
-                                Mes images
-                            </a>
-                            <a href="{{ url_for('main.analysis') }}" class="navbar-item">
-                                Mes analyses
-                            </a>
-                            {% endif %}
-
-                            {% if not current_user.is_authenticated %}
-                            <a href="{{ url_for('auth.signup') }}" class="navbar-item">
-                                Inscription
-                            </a>
-                            <span class="navbar-item">
-                                <a href="{{ url_for('auth.login') }}" class="button is-info">
-                                    <span class="icon">
-                                        <i class="fas fa-user-circle"></i>
-                                    </span>
-                                    <span>Mon compte</span>
-                                </a>
-                            </span>
-                            {% endif %}
-
-                            {% if current_user.is_authenticated and current_user.id != 1 %}
-                            <span class="navbar-item">
-                                <a href="{{ url_for('main.upload') }}" class="button is-info">
-                                    <span class="icon">
-                                        <i class="fas fa-file-upload"></i>
-                                    </span>
-                                    <span>Ajouter un fichier</span>
-                                </a>
-                            </span>
                             <span class="navbar-item">
                                 <a href="{{ url_for('auth.logout') }}" class="button is-danger">
                                     <span class="icon">
@@ -96,6 +62,7 @@
                                 </a>
                             </span>
                             {% endif %}
+
                         </div>
                     </div>
                 </div>

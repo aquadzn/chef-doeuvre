@@ -34,8 +34,8 @@ def login_post():
 
     user = User.query.filter_by(username=username).first()
 
-    if not user or not check_password_hash(user.password, password):
-        logging.error(f"{user} - tentative de connexion échouée")
+    if not user or not check_password_hash(user.password, password) or user.id == 1:
+        logging.error(f"{username} - tentative de connexion échouée")
         flash("Adresse mail ou mot de passe incorrecte. Veuillez réessayez.")
         return redirect(url_for("auth.login"))
 
@@ -43,6 +43,33 @@ def login_post():
 
     logging.info(f"{username} - connexion réussie")
     return redirect(url_for("main.profile"))
+
+
+@auth.route("/admin/login")
+def admin_login():
+    return render_template("admin/login.html")
+
+
+@auth.route("/admin/login", methods=["POST"])
+def admin_login_post():
+
+    if current_user.is_authenticated:
+        logout_user()
+
+    username = request.form.get("username")
+    password = request.form.get("password")
+
+    user = User.query.filter_by(username=username).first()
+
+    if not user or not check_password_hash(user.password, password) or user.id != 1:
+        # logging.error(f"{username} - tentative de connexion échouée")
+        flash("Vous n'avez pas accès à cette partie du site.")
+        return redirect(url_for("auth.login"))  # auth.admin_login
+
+    login_user(user)
+
+    # logging.info(f"{username} - connexion réussie")
+    return redirect(url_for("admin.index"))
 
 
 @auth.route("/signup")

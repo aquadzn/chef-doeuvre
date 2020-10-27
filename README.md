@@ -14,6 +14,7 @@ flask run
 
 * créer un compte et se connecter
 * ajouter des images sur son compte et les supprimer
+* compte admin = 1er compte crée
 
 
 ### à faire:
