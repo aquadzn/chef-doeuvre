@@ -2,6 +2,81 @@
 
 {% block content %}
 
+<style>
+    .table {
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+
 <h1 class="title">Mes images</h1>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="notification is-success">
+    <button class="delete"></button>
+    {{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
+
+{% if files|length %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Aperçu</th>
+            <th>Nom de fichier</th>
+            <th>Date d'envoi</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for file in files %}
+        <tr>
+            <th>{{ file.id }}</th>
+            <td>
+                <figure class="image is-64x64">
+                    <img src="../static/uploads/{{ file.filename }}" alt="{{ file.filename }}">
+                </figure>
+            </td>
+            <td>
+                <i>{{ file.filename }}</i>
+            </td>
+            <td>
+                {{ file.date }}
+            </td>
+            <td>
+                <a href="../static/uploads/{{ file.filename }}" download>Téléchargez l'image</a>
+                <form action="/images/delete/{{ file.id }}" method="post">
+                    <input type="submit" value="Supprimez l'image"></input>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+
+<div class="block">
+    <p class="subtitle">Pas d'image sur votre compte</p>
+</div>
+
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            var $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+
+</script>
 
 {% endblock %}

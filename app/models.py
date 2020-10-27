@@ -11,8 +11,9 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(100))
 
 
-class Upload(db.Model):
+class File(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100))
     filename = db.Column(db.String(200))
     date = db.Column(db.DateTime)

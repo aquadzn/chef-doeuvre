@@ -1,15 +1,31 @@
 # Chef d'oeuvre
 
 
-### à faire
+```python
+python create_db.py
+```
 
+```bash
+flask run
+```
+
+
+### fait:
+
+* créer un compte et se connecter
+* ajouter des images sur son compte et les supprimer
+
+
+### à faire:
 
 * partie ML
-* login avec username ou mail
-* botos3 les images uploadées
-* monitoring logs
+* analyse avec chart.js
+* dashboard admin
+* monitoring logs (sur le dashboard admin?)
+* login avec username ou mail (optionnel)
 
 
 Aperçu front
 
 ![preview.png](preview.png)
+

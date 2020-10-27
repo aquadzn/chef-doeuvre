@@ -8,6 +8,7 @@
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             <div class="notification is-danger">
+                <button class="delete"></button>
                 {{ messages[0] }}. Compte existant. Essayez de vous <a href="{{ url_for('auth.login') }}">connecter</a>.
             </div>
             {% endif %}
@@ -47,4 +48,18 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            var $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+
+</script>
+
 {% endblock %}

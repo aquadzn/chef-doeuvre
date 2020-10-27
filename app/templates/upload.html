@@ -58,6 +58,7 @@
                 {% if error %}
                 <div class="block">
                     <div class="notification is-danger">
+                        <button class="delete"></button>
                         {{ error[0] }}
                     </div>
                 </div>
@@ -68,6 +69,7 @@
                 {% if success %}
                 <div class="block">
                     <div class="notification is-success">
+                        <button class="delete"></button>
                         {{ success[0] }}
                     </div>
                 </div>
@@ -79,6 +81,17 @@
 </div>
 
 <script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            var $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+
     //function for displaying the image upload preview
     function showMyImage(fileInput) {
         var files = fileInput.files;
