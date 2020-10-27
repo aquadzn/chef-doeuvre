@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 # Disable Flask useless logging stuff
-logger = logging.getLogger('werkzeug')
+logger = logging.getLogger("werkzeug")
 logger.setLevel(logging.ERROR)
 
 # Set our logger
@@ -28,7 +28,7 @@ def create_app():
     app.config["SECRET_KEY"] = "JRPAKJ8492994xjKJ3"
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
     app.config["UPLOAD_FOLDER"] = "app/static/uploads/"
-    app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
+    app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
     db.init_app(app)
 
