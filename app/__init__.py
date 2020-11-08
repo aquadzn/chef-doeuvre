@@ -25,9 +25,11 @@ def create_app():
 
     app = Flask(__name__)
 
-    app.config["SECRET_KEY"] = "JRPAKJ8492994xjKJ3"
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
-    app.config["UPLOAD_FOLDER"] = "app/static/uploads/"
+    from .config import FLASK_KEY, FLASK_DB, FLASK_UPLOAD
+
+    app.config["SECRET_KEY"] = config.FLASK_KEY
+    app.config["SQLALCHEMY_DATABASE_URI"] = config.FLASK_DB
+    app.config["UPLOAD_FOLDER"] = config.FLASK_UPLOAD
     app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
     db.init_app(app)

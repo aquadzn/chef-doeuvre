@@ -49,9 +49,9 @@
                     {{ file.date }}
                 </td>
                 <td>
-                    <a href="../static/uploads/{{ file.filename }}" download>Téléchargez l'image</a>
+                    <a class="button is-info is-light" href="../static/uploads/{{ file.filename }}" download>Téléchargez l'image</a>
                     <form action="/images/delete/{{ file.id }}" method="post">
-                        <input type="submit" class="button is-danger" value="Supprimez l'image"></input>
+                        <input type="submit" class="button is-danger is-light" value="Supprimez l'image"></input>
                     </form>
                 </td>
             </tr>

@@ -17,6 +17,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 
 from . import db
 from .models import File
+from .model import learner
 
 
 main = Blueprint("main", __name__)
@@ -28,6 +29,23 @@ def allowed_file(filename):
         "jpg",
         "jpeg",
     ]
+
+
+# def upload_file(file_name, bucket, object_name=None):
+
+#     # If S3 object_name was not specified, use file_name
+#     if object_name is None:
+#         object_name = file_name
+
+#     # Upload the file
+#     s3_client = boto3.client('s3')
+#     try:
+#         response = s3_client.upload_file(file_name, bucket, object_name)
+#     except ClientError as e:
+#         logging.error(e)
+#         return False
+
+#     return True
 
 
 @main.errorhandler(413)
@@ -116,6 +134,8 @@ def upload():
                 filename=file.filename,
                 date=datetime.now(),
             )
+
+            print(learner.predict(os.path.join("app/static/uploads/", filename)))
 
             db.session.add(new_file)
             db.session.commit()
