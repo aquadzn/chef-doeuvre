@@ -6,7 +6,7 @@ application:
     - name: images
       type: ssd
       size: 10GB
-      mount_point: /mnt/images
+      mount_point: /mnt/images/uploads
 routers:
 - name: main
   routes:
