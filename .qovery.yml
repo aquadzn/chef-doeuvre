@@ -1,7 +1,7 @@
 application:
   name: chef-oeuvre
   project: chef-oeuvre
-  cpu: 2
+  cpu: 4
   ram: 4GB
   publicly_accessible: true
   storage:
