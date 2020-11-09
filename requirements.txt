@@ -1,5 +1,8 @@
 flask
 flask-sqlalchemy
 flask-login
+torch==1.7.0+cpu
+torchvision==0.7+cpu
+-f https://download.pytorch.org/whl/torch_stable.html
 fastai==2.1
 ipython
