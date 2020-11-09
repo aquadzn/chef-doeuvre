@@ -1,0 +1,15 @@
+application:
+  name: chef-oeuvre
+  project: chef-oeuvre
+  publicly_accessible: true
+  storage:
+    - name: images
+      type: ssd
+      size: 10GB
+      mount_point: /mnt/images
+routers:
+- name: main
+  routes:
+  - application_name: app
+    paths:
+    - /*

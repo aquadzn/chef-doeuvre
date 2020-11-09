@@ -3,6 +3,7 @@ FROM python:3.8-slim
 EXPOSE 5000
 
 RUN mkdir -p /app
+RUN mkdir /mnt/images/uploads
 COPY . /app
 WORKDIR /app/
 
