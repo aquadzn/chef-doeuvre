@@ -7,11 +7,6 @@ from datetime import datetime
 
 import config
 
-# import psycopg2
-# from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-
-# from qovery_client.qovery import Qovery
-
 from fastai.vision.all import load_learner
 
 from flask import Flask, flash, redirect, request, url_for, render_template
@@ -32,42 +27,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
-
-# # Setup Qovery
-# qovery = Qovery()
-# db = qovery.get_database_by_name("my-db")
-
-# # Setup PostgreSQL
-# conn = psycopg2.connect(
-#     host=db.host,
-#     user=db.username,
-#     database="postgres",
-#     password=db.password,
-#     port=db.port,
-# )
-# # conn.set_isolation_level(ISOsLATION_LEVEL_AUTOCOMMIT)
-
-# cursor = conn.cursor()
-
-# queries = [
-#     """
-# CREATE TABLE IF NOT EXISTS users (
-#     id SERIAL PRIMARY KEY,
-#     username VARCHAR (100) UNIQUE,
-#     email VARCHAR (200) UNIQUE,
-#     password VARCHAR (100),
-#     created_at TIMESTAMP DEFAULT NOW(),
-# )
-#     """,
-#     """
-# CREATE TABLE IF NOT EXISTS files (
-#     id SERIAL PRIMARY KEY,
-#     username VARCHAR (50),
-#     filename VARCHAR (200),
-#     uploaded_at TIMESTAMP DEFAULT NOW(),
-# )
-#     """
-# ]
 
 
 def page_not_found(e):
