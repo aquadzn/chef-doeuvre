@@ -6,6 +6,6 @@ RUN mkdir -p /app
 COPY . /app
 WORKDIR /app/
 
-RUN python3 -m pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
-ENTRYPOINT ["python3", "app.py"]
+ENTRYPOINT ["python", "main.py"]
