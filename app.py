@@ -384,4 +384,4 @@ if __name__ == "__main__":
 
     learner = load_learner("model.pkl", cpu=True)
 
-    app.run(debug=True)
+    app.run(port=5000, debug=False)
