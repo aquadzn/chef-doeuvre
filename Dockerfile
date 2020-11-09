@@ -1,4 +1,4 @@
-FROM python:3.7-slim
+FROM python:3.8-slim-buster
 
 EXPOSE 5000
 
@@ -6,6 +6,6 @@ RUN mkdir -p /app
 COPY . /app
 WORKDIR /app/
 
-RUN pip install -r requirements.txt
+RUN python3 -m pip install -r requirements.txt
 
-ENTRYPOINT ["python", "app.py"]
+ENTRYPOINT ["python3", "app.py"]
