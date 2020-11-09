@@ -2,7 +2,7 @@ import os
 
 
 FLASK_KEY = os.urandom(32)
-FLASK_DB = "sqlite:///db.sqlite" # os.environ.get("FLASK_DB")
+FLASK_DB = "sqlite:///db.sqlite"
 FLASK_UPLOAD = "app/static/uploads/"
 
 # S3_BUCKET = os.environ.get("S3_BUCKET_NAME")

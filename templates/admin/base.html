@@ -34,7 +34,7 @@
                     <div class="navbar-brand">
                         <a class="navbar-item">
                             <span class="is-size-2">
-                                BGREMOVE
+                                Mon Gueuleton
                             </span>
                         </a>
                         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
@@ -50,14 +50,14 @@
                     <div id="navMenu" class="navbar-menu">
                         <div class="navbar-end">
                             {% if current_user.is_authenticated and current_user.id == 1 %}
-                            <a href="{{ url_for('admin.index') }}" class="navbar-item">
+                            <a href="{{ url_for('admin_index') }}" class="navbar-item">
                                 Accueil
                             </a>
-                            <a href="{{ url_for('admin.dashboard') }}" class="navbar-item">
+                            <a href="{{ url_for('admin_dashboard') }}" class="navbar-item">
                                 Tableau de bord
                             </a>
                             <span class="navbar-item">
-                                <a href="{{ url_for('auth.logout') }}" class="button is-danger">
+                                <a href="{{ url_for('logout') }}" class="button is-danger">
                                     <span class="icon">
                                         <i class="fas fa-sign-out-alt"></i>
                                     </span>

@@ -9,7 +9,7 @@
             {% if messages %}
             <div class="notification is-danger">
                 <button class="delete"></button>
-                {{ messages[0] }}. Compte existant. Essayez de vous <a href="{{ url_for('auth.login') }}">connecter</a>.
+                {{ messages[0] }}. Compte existant. Essayez de vous <a href="{{ url_for('login') }}">connecter</a>.
             </div>
             {% endif %}
             {% endwith %}

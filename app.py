@@ -1,5 +1,7 @@
 import os
-import json
+import string
+import random
+
 # import logging
 from datetime import datetime
 
@@ -16,7 +18,7 @@ from flask import Flask, flash, redirect, request, url_for, render_template
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import (
-    # UserMixin,
+    UserMixin,
     LoginManager,
     login_user,
     logout_user,
@@ -74,7 +76,7 @@ def page_not_found(e):
 
 def file_too_large(e):
     flash("Le fichier excède 2MB!", "error")
-    return redirect(url_for("main.upload")), 413
+    return redirect(url_for("upload")), 413
 
 
 def allowed_file(filename):
@@ -121,6 +123,38 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+def build_sample_db():
+
+    db.drop_all()
+    db.create_all()
+
+    admin_user = User(
+        username="admin",
+        email="admin@mail.com",
+        password=generate_password_hash("admin", method="sha256"),
+        created_at=datetime.now(),
+    )
+    db.session.add(admin_user)
+
+    usernames = [
+        "jean",
+        "william",
+        "sylvere",
+    ]
+
+    for i in range(len(usernames)):
+        test_user = User(
+            username=usernames[i],
+            email=f"{usernames[i]}@mail.com",
+            password=generate_password_hash("azerty", method="sha256"),
+            created_at=datetime.now(),
+        )
+        db.session.add(test_user)
+
+    db.session.commit()
+    return
+
+
 # ------------------- MAIN -------------------
 
 
@@ -149,12 +183,56 @@ def login_post():
     if not user or not check_password_hash(user.password, password) or user.id == 1:
         # logging.error(f"{username} - tentative de connexion échouée")
         flash("Adresse mail ou mot de passe incorrecte. Veuillez réessayez.")
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("login"))
 
     login_user(user, remember=remember)
 
     # logging.info(f"{username} - connexion réussie")
-    return redirect(url_for("main.profile"))
+    return redirect(url_for("profile"))
+
+
+@app.route("/signup")
+def signup():
+    return render_template("signup.html")
+
+
+@app.route("/signup", methods=["POST"])
+def signup_post():
+
+    username = request.form.get("username")
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        # logging.error(f"{username} - {email} déjà associé à un compte.")
+        flash("Un compte est déjà associé à cette adresse mail.")
+        return redirect(url_for("signup"))
+
+    new_user = User(
+        username=username,
+        email=email,
+        password=generate_password_hash(password, method="sha256"),
+        created_at=datetime.now(),
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    # logging.info(f"{username} - création de compte")
+    return redirect(url_for("login"))
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    # logging.info(f"{current_user.username} - déconnexion")
+    logout_user()
+    return redirect(url_for("index"))
+
+
+# ------------------- ADMIN -------------------
 
 
 @app.route("/admin/login")
@@ -176,61 +254,17 @@ def admin_login_post():
     if not user or not check_password_hash(user.password, password) or user.id != 1:
         # # logging.error(f"{username} - tentative de connexion échouée")
         flash("Vous n'avez pas accès à cette partie du site.")
-        return redirect(url_for("auth.login"))  # auth.admin_login
+        return redirect(url_for("login"))  # auth.admin_login
 
     login_user(user)
 
     # # logging.info(f"{username} - connexion réussie")
-    return redirect(url_for("admin.index"))
-
-
-@app.route("/signup")
-def signup():
-    return render_template("signup.html")
-
-
-@app.route("/signup", methods=["POST"])
-def signup_post():
-
-    username = request.form.get("username")
-    email = request.form.get("email")
-    password = request.form.get("password")
-
-    user = User.query.filter_by(email=email).first()
-
-    if user:
-        # logging.error(f"{username} - {email} déjà associé à un compte.")
-        flash("Un compte est déjà associé à cette adresse mail.")
-        return redirect(url_for("auth.signup"))
-
-    new_user = User(
-        username=username,
-        email=email,
-        password=generate_password_hash(password, method="sha256"),
-        created_at=datetime.now(),
-    )
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    # logging.info(f"{username} - création de compte")
-    return redirect(url_for("auth.login"))
-
-
-@app.route("/logout")
-@login_required
-def logout():
-    # logging.info(f"{current_user.username} - déconnexion")
-    logout_user()
-    return redirect(url_for("main.index"))
-
-
-# ------------------- ADMIN -------------------
+    return redirect(url_for("admin_index"))
 
 
 @app.route("/admin")
 @login_required
-def index():
+def admin_index():
     if current_user.id != 1:
         return render_template("404.html"), 404
     else:
@@ -239,7 +273,7 @@ def index():
 
 @app.route("/admin/dashboard")
 @login_required
-def dashboard():
+def admin_dashboard():
 
     if current_user.id != 1:
         return render_template("404.html"), 404
@@ -262,7 +296,7 @@ def delete_user(user_id):
 
         # logging.info(f"admin - utilisateur #{user_id} supprimé.")
         flash("Utilisateur supprimée.")
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin_dashboard"))
 
 
 @app.route("/admin/dashboard/delete_file/<int:file_id>", methods=["POST"])
@@ -273,7 +307,7 @@ def delete_file(file_id):
         return render_template("404.html"), 404
     else:
         filepath = os.path.join(
-            "app/static/uploads", File.query.filter_by(id=file_id).first().filename
+            "./static/uploads", File.query.filter_by(id=file_id).first().filename
         )
         if os.path.exists(filepath):
             os.remove(filepath)
@@ -284,7 +318,7 @@ def delete_file(file_id):
 
         # logging.info("admin - record SQL #{file_id} supprimé.")
         flash("Image supprimée.")
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin_dashboard"))
 
 
 # ------------------- ACTIONS -------------------
@@ -315,7 +349,7 @@ def images():
 def delete(post_id):
 
     filepath = os.path.join(
-        "app/static/uploads", File.query.filter_by(id=post_id).first().filename
+        "./static/uploads", File.query.filter_by(id=post_id).first().filename
     )
     if os.path.exists(filepath):
         os.remove(filepath)
@@ -326,7 +360,7 @@ def delete(post_id):
 
     # logging.info(f"{current_user.username} - record SQL #{post_id} supprimé.")
     flash("Image supprimée.")
-    return redirect(url_for("main.images"))
+    return redirect(url_for("images"))
 
 
 @app.route("/analysis")
@@ -346,18 +380,18 @@ def upload():
         if "file" not in request.files:
             # logging.error(f"{current_user.username} - erreur d'envoi de fichier")
             flash("Pas de fichier!", "error")
-            return redirect(url_for("main.upload"))
+            return redirect(url_for("upload"))
 
         file = request.files["file"]
 
         if file.filename == "":
             # logging.error(f"{current_user.username} - erreur d'envoi de fichier")
             flash("Pas de fichier!", "error")
-            return redirect(url_for("main.upload"))
+            return redirect(url_for("upload"))
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join("app/static/uploads/", filename))
+            file.save(os.path.join("./static/uploads/", filename))
             # logging.info(f"{current_user.username} - {filename} sauvegardé")
 
             new_file = File(
@@ -366,7 +400,7 @@ def upload():
                 uploaded_at=datetime.now(),
             )
 
-            print(learner.predict(os.path.join("app/static/uploads/", filename)))
+            print(learner.predict(os.path.join("./static/uploads/", filename)))
 
             db.session.add(new_file)
             db.session.commit()
@@ -379,5 +413,13 @@ def upload():
 
 
 if __name__ == "__main__":
+
+    if not os.path.exists("db.sqlite"):
+        build_sample_db()
+    else:
+        os.remove("db.sqlite")
+        build_sample_db()
+
     learner = load_learner("model.pkl", cpu=True)
+
     app.run(debug=True)
