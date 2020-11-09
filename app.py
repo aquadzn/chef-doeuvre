@@ -149,6 +149,8 @@ def build_sample_db():
             password=generate_password_hash("azerty", method="sha256"),
             created_at=datetime.now(),
         )
+        print(f"Utilisateur '{usernames[i]}' crée.")
+        print("Mot de passe: azerty")
         db.session.add(test_user)
 
     db.session.commit()
@@ -418,6 +420,7 @@ if __name__ == "__main__":
         build_sample_db()
     else:
         os.remove("db.sqlite")
+        print("Le fichier 'db.sqlite' a été supprimé.")
         build_sample_db()
 
     learner = load_learner("model.pkl", cpu=True)
