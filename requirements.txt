@@ -1,5 +1,5 @@
 flask
 flask-sqlalchemy
 flask-login
-fastai==2.2
+fastai==2.1
 ipython
