@@ -3,7 +3,7 @@ import os
 
 FLASK_KEY = os.urandom(32)
 FLASK_DB = "sqlite:///db.sqlite"
-FLASK_UPLOAD = "/mnt/images/uploads/"
+FLASK_UPLOAD = "/mnt/images/"
 
 # S3_BUCKET = os.environ.get("S3_BUCKET_NAME")
 # S3_KEY = os.environ.get("S3_ACCESS_KEY")

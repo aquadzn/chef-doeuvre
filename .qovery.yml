@@ -1,14 +1,14 @@
 application:
   name: chef-oeuvre
   project: chef-oeuvre
-  cpu: 2
-  ram: 4GB
+  cpu: 1
+  ram: 2GB
   publicly_accessible: true
   storage:
     - name: images
       type: ssd
       size: 10GB
-      mount_point: /mnt/images/uploads
+      mount_point: /mnt/images/
 routers:
 - name: main
   routes:

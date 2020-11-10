@@ -1,6 +1,7 @@
 import os
 import string
 import random
+import argparse
 
 # import logging
 from datetime import datetime
@@ -27,6 +28,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
+
+
+def get_args():
+    parser = argparse.ArgumentParser(description="Run Flask web server")
+    parser.add_argument("--host", type=str, help="Hostname (default: 127.0.0.1")
+    parser.add_argument("--port", type=int, help="Port (default: 5000")
+
+    args = parser.parse_args()
+    return args
 
 
 def page_not_found(e):
@@ -268,7 +278,7 @@ def delete_file(file_id):
         return render_template("404.html"), 404
     else:
         filepath = os.path.join(
-            "/mnt/images/uploads", File.query.filter_by(id=file_id).first().filename
+            "/mnt/images/", File.query.filter_by(id=file_id).first().filename
         )
         if os.path.exists(filepath):
             os.remove(filepath)
@@ -310,7 +320,7 @@ def images():
 def delete(post_id):
 
     filepath = os.path.join(
-        "/mnt/images/uploads", File.query.filter_by(id=post_id).first().filename
+        "/mnt/images/", File.query.filter_by(id=post_id).first().filename
     )
     if os.path.exists(filepath):
         os.remove(filepath)
@@ -352,7 +362,7 @@ def upload():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join("/mnt/images/uploads/", filename))
+            file.save(os.path.join("/mnt/images/", filename))
             # logging.info(f"{current_user.username} - {filename} sauvegardé")
 
             new_file = File(
@@ -361,13 +371,16 @@ def upload():
                 uploaded_at=datetime.now(),
             )
 
-            print(learner.predict(os.path.join("/mnt/images/uploads/", filename)))
+            label, label_idx, _ = learner.predict(
+                os.path.join("/mnt/images/", filename)
+            )
 
             db.session.add(new_file)
             db.session.commit()
 
             # logging.info(f"{current_user.username} - record SQL ajouté")
-            flash("Fichier envoyé!", "success")
+            # flash("Fichier envoyé!", "success")
+            flash(f"Label: {str(label)} ({int(label_idx)})", "success")
             return redirect(request.url)
 
     return render_template("upload.html", username=current_user.username)
@@ -383,5 +396,6 @@ if __name__ == "__main__":
         build_sample_db()
 
     learner = load_learner("model.pkl", cpu=True)
+    args = get_args()
 
-    app.run(port=5000, debug=False)
+    app.run(host=args.host, port=args.port, debug=False)
