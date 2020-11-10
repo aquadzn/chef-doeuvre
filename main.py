@@ -278,7 +278,7 @@ def delete_file(file_id):
         return render_template("404.html"), 404
     else:
         filepath = os.path.join(
-            "/mnt/images/", File.query.filter_by(id=file_id).first().filename
+            "./static/uploads/", File.query.filter_by(id=file_id).first().filename
         )
         if os.path.exists(filepath):
             os.remove(filepath)
@@ -320,7 +320,7 @@ def images():
 def delete(post_id):
 
     filepath = os.path.join(
-        "/mnt/images/", File.query.filter_by(id=post_id).first().filename
+        "./static/uploads/", File.query.filter_by(id=post_id).first().filename
     )
     if os.path.exists(filepath):
         os.remove(filepath)
@@ -362,7 +362,7 @@ def upload():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join("/mnt/images/", filename))
+            file.save(os.path.join("./static/uploads/", filename))
             # logging.info(f"{current_user.username} - {filename} sauvegardé")
 
             new_file = File(
@@ -372,7 +372,7 @@ def upload():
             )
 
             label, label_idx, _ = learner.predict(
-                os.path.join("/mnt/images/", filename)
+                os.path.join("./static/uploads/", filename)
             )
 
             db.session.add(new_file)
