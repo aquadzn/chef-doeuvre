@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<div class="columns is-vcentered">
-    <div class="column">
+<div class="columns is-vcentered is-desktop">
+    <div class="column is-12-mobile is-half-desktop">
         <h1 class="title has-text-left">Bonjour <i>{{ username }}</i> 👋</h1>
         <div class="block">
             <h1 class="title has-text-left">envie d'utiliser notre service ?</h1>
@@ -18,7 +18,7 @@
         </div>
 
     </div>
-    <div class="column">
+    <div class="column is-12-mobile is-half-desktop">
         <div class="box">
             <div class="block">
                 <div class="field">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="block">
-                    <input type="submit" class="button is-fullwidth is-dark" value="Envoi"></input>
+                    <input type="submit" class="button is-fullwidth is-dark" value="Envoi">
                 </div>
                 {% with error = get_flashed_messages(category_filter=["error"]) %}
                 {% if error %}

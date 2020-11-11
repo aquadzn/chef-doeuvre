@@ -2,6 +2,16 @@
 
 {% block content %}
 
+<style>
+    .table {
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 6px;
+        box-shadow: 0 .5em 1em -.125em rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .02);
+        padding: 2rem;
+    }
+</style>
+
 <h1 class="title">Tableau de bord</h1>
 
 {% with messages = get_flashed_messages() %}
@@ -17,40 +27,45 @@
     <div class="column is-8">
         <h1 class="subtitle">Utilisateurs</h1>
         {% if users|length %}
-        <div class="box">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Pseudonyme</th>
-                        <th>Adresse mail</th>
-                        <th>Date de création</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr>
-                        <th>{{ user.id }}</th>
-                        <td>
-                            {{ user.username }}
-                        </td>
-                        <td>
-                            {{ user.email }}
-                        </td>
-                        <td>
-                            {{ user.created_at }}
-                        </td>
-                        <td>
-                            <form action="/admin/dashboard/delete_user/{{ user.id }}" method="post">
-                                <input class="button is-danger is-light" type="submit" value="Supprimez le compte"
-                                    input>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div style="display: grid">
+            <div class="table-container">
+                <table class="table is-striped is-narrow is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Pseudonyme</th>
+                            <th>Adresse mail</th>
+                            <th>Date de création</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <th>{{ user.id }}</th>
+                            <td>
+                                {{ user.username }}
+                            </td>
+                            <td>
+                                {{ user.email }}
+                            </td>
+                            <td>
+                                {{ user.created_at }}
+                            </td>
+                            <td>
+                                <form action="/admin/dashboard/delete_user/{{ user.id }}" method="post">
+                                    <button type="submit" class="button is-danger is-light is-small">
+                                        <span class="icon">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </span>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% else %}
         <div class="block">
@@ -63,39 +78,47 @@
     <div class="column is-8">
         <h1 class="subtitle">Fichiers</h1>
         {% if files|length %}
-        <div class="box">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Utilisateur</th>
-                        <th>Nom de fichier</th>
-                        <th>Date d'envoi</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for file in files %}
-                    <tr>
-                        <th>{{ file.id }}</th>
-                        <td>
-                            <i>{{ file.username }}</i>
-                        </td>
-                        <td>
-                            <i>{{ file.filename }}</i>
-                        </td>
-                        <td>
-                            {{ file.uploaded_at }}
-                        </td>
-                        <td>
-                            <form action="/admin/dashboard/delete_file/{{ file.id }}" method="post">
-                                <input class="button is-danger is-light" type="submit" value="Supprimez l'image" input>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div style="display: grid">
+            <div class="table-container">
+                <table class="table is-striped is-narrow is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Utilisateur</th>
+                            <th>Nom de fichier</th>
+                            <th>Date d'envoi</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in files %}
+                        <tr>
+                            <th>{{ file.id }}</th>
+                            <td>
+                                {{ file.username }}
+                            </td>
+                            <td>
+                                <span class="tag">
+                                    {{ file.filename }}
+                                </span>
+                            </td>
+                            <td>
+                                {{ file.uploaded_at }}
+                            </td>
+                            <td>
+                                <form action="/admin/dashboard/delete_file/{{ file.id }}" method="post">
+                                    <button type="submit" class="button is-danger is-light is-small">
+                                        <span class="icon">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </span>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% else %}
 

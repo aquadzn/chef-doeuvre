@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="columns is-mobile is-centered">
-    <div class="column is-half">
+<div class="columns is-centered">
+    <div class="column is-12-mobile is-half-desktop">
         <div class="card">
             <div class="card-image">
-                <figure class="image is-256x256">
+                <figure class="image is-128x128">
                     <img src="{{url_for('static', filename='img/user.png')}}" alt="Placeholder image">
                 </figure>
             </div>
@@ -24,8 +24,8 @@
                 </div>
             </div>
             <footer class="card-footer">
-                <a href="#" class="card-footer-item">Save</a>
-                <a href="{{ url_for('logout') }}" class="card-footer-item">Logout</a>
+                <a href="{{ url_for('upload') }}" class="card-footer-item">Ajouter un fichier</a>
+                <a href="{{ url_for('images') }}" class="card-footer-item">Mes images</a>
             </footer>
         </div>
     </div>

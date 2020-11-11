@@ -403,6 +403,7 @@ def upload():
             filename = secure_filename(file.filename)
 
             label, label_idx, _ = learner.predict(PILImage.create(file.stream))
+            label = label.capitalize().replace("_", " ")
 
             raw_data = file.read()
 

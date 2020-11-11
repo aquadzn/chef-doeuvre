@@ -6,9 +6,11 @@
     .table {
         margin-left: auto;
         margin-right: auto;
+        border-radius: 6px;
+        box-shadow: 0 .5em 1em -.125em rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .02);
+        padding: 2rem;
     }
 </style>
-
 
 <h1 class="title">Mes images</h1>
 
@@ -22,42 +24,61 @@
 {% endwith %}
 
 {% if files|length %}
-<div class="box">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom de fichier</th>
-                <th>Label détecté</th>
-                <th>Date d'envoi</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for file in files %}
-            <tr>
-                <th>{{ file.id }}</th>
-                <td>
-                    <i>{{ file.filename }}</i>
-                </td>
-                <td>
-                    <i>{{ file.label }}</i>
-                </td>
-                <td>
-                    {{ file.uploaded_at }}
-                </td>
-                <td>
-                    <form action="/images/download/{{ file.filename }}" method="post">
-                        <input type="submit" class="button is-info is-light" value="Téléchargez l'image"></input>
-                    </form>
-                    <form action="/images/delete/{{ file.id }}" method="post">
-                        <input type="submit" class="button is-danger is-light" value="Supprimez l'image"></input>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="columns is-centered">
+    <div class="column">
+        <div style="display: grid">
+            <div class="table-container">
+                <table class="table is-striped is-narrow is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom de fichier</th>
+                            <th>Label détecté</th>
+                            <th>Date d'envoi</th>
+                            <th>Télécharger</th>
+                            <th>Supprimer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in files %}
+                        <tr>
+                            <th>{{ file.id }}</th>
+                            <td>
+                                <span class="tag">
+                                    {{ file.filename }}
+                                </span>
+                            </td>
+                            <td>
+                                {{ file.label }}
+                            </td>
+                            <td>
+                                {{ file.uploaded_at }}
+                            </td>
+                            <td>
+                                <form action="/images/download/{{ file.filename }}" method="post">
+                                    <button type="submit" class="button is-info is-light is-small">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-cloud-download-alt"></i>
+                                        </span>
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="/images/delete/{{ file.id }}" method="post">
+                                    <button type="submit" class="button is-danger is-light is-small">
+                                        <span class="icon">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </span>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% else %}
 

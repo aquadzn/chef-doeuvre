@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="columns is-mobile">
-    <div class="column is-half is-offset-one-quarter">
+<div class="columns is-centered">
+    <div class="column is-12-mobile is-half-desktop">
         <h3 class="title">Mon compte</h3>
         <div class="box">
             {% with messages = get_flashed_messages() %}
@@ -17,7 +17,7 @@
                 <div class="field">
                     <label class="label">Pseudonyme</label>
                     <div class="control has-icons-left">
-                        <input class="input is-large" type="text" name="username" placeholder="jean" autofocus="">
+                        <input class="input is-medium" type="text" name="username" placeholder="jean" autofocus="">
                         <span class="icon is-small is-left">
                             <i class="fas fa-user-circle"></i>
                         </span>
@@ -27,7 +27,7 @@
                 <div class="field">
                     <label class="label">Mot de passe</label>
                     <div class="control has-icons-left">
-                        <input class="input is-large" type="password" name="password" placeholder="*******">
+                        <input class="input is-medium" type="password" name="password" placeholder="*******">
                         <span class="icon is-small is-left">
                             <i class="fas fa-lock"></i>
                         </span>
@@ -39,7 +39,7 @@
                         Se souvenir de moi
                     </label>
                 </div>
-                <button class="button is-block is-info is-large is-fullwidth">Connexion</button>
+                <button class="button is-block is-info is-medium is-fullwidth">Connexion</button>
             </form>
         </div>
     </div>
