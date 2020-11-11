@@ -59,7 +59,6 @@ def download_blob(source_blob_name):
 
     blob = bucket.blob(source_blob_name)
     return blob.download_as_bytes()
-    
 
     # print(f"Blob {source_blob_name} downloaded to {destination_file_name}.")
 
@@ -77,7 +76,7 @@ def delete_blob(blob_name):
 
 
 def page_not_found(e):
-    return render_template("404.html"), 404
+    return render_template("errors/404.html"), 404
 
 
 def file_too_large(e):
@@ -116,6 +115,7 @@ class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100))
     filename = db.Column(db.String(200))
+    label = db.Column(db.String(200))
     uploaded_at = db.Column(db.DateTime)
 
 
@@ -127,6 +127,11 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return render_template("errors/401.html"), 401
 
 
 def build_sample_db():
@@ -274,7 +279,7 @@ def admin_login_post():
 @login_required
 def admin_index():
     if current_user.id != 1:
-        return render_template("404.html"), 404
+        return render_template("errors/404.html"), 404
     else:
         return render_template("admin/index.html")
 
@@ -284,7 +289,7 @@ def admin_index():
 def admin_dashboard():
 
     if current_user.id != 1:
-        return render_template("404.html"), 404
+        return render_template("errors/404.html"), 404
     else:
         users = User.query.all()
         files = File.query.all()
@@ -297,7 +302,7 @@ def admin_dashboard():
 def delete_user(user_id):
 
     if current_user.id != 1:
-        return render_template("404.html"), 404
+        return render_template("errors/404.html"), 404
     else:
         User.query.filter_by(id=user_id).delete()
         db.session.commit()
@@ -312,9 +317,11 @@ def delete_user(user_id):
 def delete_file(file_id):
 
     if current_user.id != 1:
-        return render_template("404.html"), 404
+        return render_template("errors/404.html"), 404
     else:
-        delete_blob(File.query.filter_by(id=file_id).first().filename)
+        file_row = File.query.filter_by(id=file_id).first()
+
+        delete_blob(f"{file_row.username}/{file_row.filename}")
         # logging.info(f"admin - {filepath} supprimé.")
 
         File.query.filter_by(id=file_id).delete()
@@ -354,17 +361,16 @@ def download(filename):
 
     bytes_file = download_blob(source_blob_name=filename)
 
-    return send_file(
-        BytesIO(bytes_file),
-        attachment_filename=filename
-    )
+    return send_file(BytesIO(bytes_file), attachment_filename=filename)
 
 
 @app.route("/images/delete/<int:post_id>", methods=["POST"])
 @login_required
 def delete(post_id):
 
-    delete_blob(File.query.filter_by(id=post_id).first().filename)
+    delete_blob(
+        f"{current_user.username}/{File.query.filter_by(id=post_id).first().filename}"
+    )
     # logging.info(f"{current_user.username} - {filepath} supprimé.")
 
     File.query.filter_by(id=post_id).delete()
@@ -408,12 +414,16 @@ def upload():
 
             raw_data = file.read()
 
-            upload_blob(source_file_name=raw_data, destination_blob_name=filename)
+            upload_blob(
+                source_file_name=raw_data,
+                destination_blob_name=f"{current_user.username}/{filename}",
+            )
             # logging.info(f"{current_user.username} - {filename} sauvegardé")
 
             new_file = File(
                 username=current_user.username,
                 filename=file.filename,
+                label=label,
                 uploaded_at=datetime.now(),
             )
 
@@ -422,7 +432,7 @@ def upload():
 
             # logging.info(f"{current_user.username} - record SQL ajouté")
             # flash("Fichier envoyé!", "success")
-            flash(f"Label: {str(label)} ({int(label_idx)})", "success")
+            flash(f"Détecté: {label}", "success")
             return redirect(request.url)
 
     return render_template("upload.html", username=current_user.username)

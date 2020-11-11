@@ -5,3 +5,4 @@ __pycache__
 *.pkl
 gcp-credentials.json
 config.py
+*.sqlite

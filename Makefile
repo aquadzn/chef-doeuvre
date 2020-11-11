@@ -30,5 +30,9 @@ deploy_gcp:
 		--memory=2Gi
 
 
-bucket_gcp:
+create_bucket:
 	gsutil mb gs://$(BUCKET_NAME)
+
+
+clean_bucket:
+	gsutil -m rm -r gs://$(BUCKET_NAME)/*
