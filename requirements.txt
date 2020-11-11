@@ -7,3 +7,5 @@ torchvision==0.7+cpu
 fastai
 ipython
 google-cloud-storage
+black
+pytest

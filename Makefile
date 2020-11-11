@@ -29,7 +29,7 @@ build_docker:
 
 deploy_gcp:
 	gcloud builds submit --tag gcr.io/ml-dl-77/chef-oeuvre
-	gcloud run deploy "$tag" \
+	gcloud run deploy chef-oeuvre \
 		--image gcr.io/ml-dl-77/chef-oeuvre \
 		--platform=managed \
 		--allow-unauthenticated \
