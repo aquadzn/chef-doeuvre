@@ -1,7 +1,8 @@
 HOST=0.0.0.0
 PORT=8080
 BUCKET_NAME=chef-oeuvre
-
+SERVICE_NAME=chef-oeuvre
+IMAGE_NAME=chef-oeuvre
 
 setup:
 	pip install -r requirements.txt
@@ -31,9 +32,9 @@ build_docker:
 
 
 deploy_gcp:
-	gcloud builds submit --tag gcr.io/ml-dl-77/chef-oeuvre
-	gcloud run deploy chef-oeuvre \
-		--image gcr.io/ml-dl-77/chef-oeuvre \
+	gcloud builds submit --tag gcr.io/ml-dl-77/$(IMAGE_NAME)
+	gcloud run deploy $(SERVICE_NAME) \
+		--image gcr.io/ml-dl-77/$(IMAGE_NAME) \
 		--platform=managed \
 		--allow-unauthenticated \
 		--region=us-east1 \
@@ -41,8 +42,12 @@ deploy_gcp:
 		--memory=2Gi
 
 
-delete_gcp:
-	gcloud container images delete --force-delete-tags gcr.io/ml-dl-77/chef-oeuvre
+delete service:
+	gcloud run services delete $(SERVICE_NAME) --platform=managed --region=us-east1
+
+
+delete_image:
+	gcloud container images delete --force-delete-tags gcr.io/ml-dl-77/$(IMAGE_NAME)
 
 
 create_bucket:
