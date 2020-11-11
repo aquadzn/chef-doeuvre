@@ -14,8 +14,6 @@ from google.cloud import storage
 import numpy as np
 import PIL
 
-import torch
-from torchvision import transforms
 from fastai.vision.all import load_learner, PILImage
 
 from flask import Flask, flash, redirect, request, url_for, render_template, send_file

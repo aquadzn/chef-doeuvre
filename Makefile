@@ -9,6 +9,14 @@ setup:
 
 lint:
 	black *.py
+	black */*.py
+	rm -rf __pycache__
+	rm -rf */__pycache__
+	rm -rf .pytest_cache
+
+
+test:
+	pytest --disable-warnings
 
 
 run:
