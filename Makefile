@@ -12,6 +12,7 @@ lint:
 	black */*.py
 	flake8 --max-line-length=88 *.py
 	flake8 --max-line-length=88 */*.py
+	bandit *.py
 	rm -rf __pycache__
 	rm -rf */__pycache__
 	rm -rf .pytest_cache

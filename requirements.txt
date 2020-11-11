@@ -10,3 +10,4 @@ google-cloud-storage
 black
 flake8
 pytest
+bandit
