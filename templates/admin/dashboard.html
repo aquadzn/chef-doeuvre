@@ -64,7 +64,6 @@
                     <tr>
                         <th>ID</th>
                         <th>Utilisateur</th>
-                        <th>Aperçu</th>
                         <th>Nom de fichier</th>
                         <th>Date d'envoi</th>
                         <th>Actions</th>
@@ -76,11 +75,6 @@
                         <th>{{ file.id }}</th>
                         <td>
                             <i>{{ file.username }}</i>
-                        </td>
-                        <td>
-                            <figure class="image is-64x64">
-                                <img src="./static/uploads/{{ file.filename }}" alt="{{ file.filename }}">
-                            </figure>
                         </td>
                         <td>
                             <i>{{ file.filename }}</i>

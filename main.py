@@ -4,13 +4,21 @@ import random
 import argparse
 
 # import logging
+from io import BytesIO
 from datetime import datetime
 
 import config
 
-from fastai.vision.all import load_learner
+from google.cloud import storage
 
-from flask import Flask, flash, redirect, request, url_for, render_template
+import numpy as np
+import PIL
+
+import torch
+from torchvision import transforms
+from fastai.vision.all import load_learner, PILImage
+
+from flask import Flask, flash, redirect, request, url_for, render_template, send_file
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import (
@@ -39,6 +47,35 @@ def get_args():
     return args
 
 
+def upload_blob(source_file_name, destination_blob_name):
+
+    blob = bucket.blob(destination_blob_name)
+    blob.upload_from_string(source_file_name)
+
+    # print(f"File {source_file_name} uploaded to {destination_blob_name}.")
+
+
+def download_blob(source_blob_name):
+
+    blob = bucket.blob(source_blob_name)
+    return blob.download_as_bytes()
+    
+
+    # print(f"Blob {source_blob_name} downloaded to {destination_file_name}.")
+
+
+def delete_blob(blob_name):
+
+    blob = bucket.blob(blob_name)
+    blob.delete()
+
+    print(f"Blob {blob_name} deleted.")
+
+
+# def request_to_image(raw):
+#     return open_image(BytesIO(raw))
+
+
 def page_not_found(e):
     return render_template("404.html"), 404
 
@@ -58,7 +95,7 @@ def allowed_file(filename):
 
 app.config["SECRET_KEY"] = config.FLASK_KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = config.FLASK_DB
-app.config["UPLOAD_FOLDER"] = config.FLASK_UPLOAD
+# app.config["UPLOAD_FOLDER"] = config.FLASK_UPLOAD
 app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
 app.register_error_handler(404, page_not_found)
@@ -277,12 +314,8 @@ def delete_file(file_id):
     if current_user.id != 1:
         return render_template("404.html"), 404
     else:
-        filepath = os.path.join(
-            "./static/uploads/", File.query.filter_by(id=file_id).first().filename
-        )
-        if os.path.exists(filepath):
-            os.remove(filepath)
-            # logging.info(f"admin - {filepath} supprimé.")
+        delete_blob(File.query.filter_by(id=file_id).first().filename)
+        # logging.info(f"admin - {filepath} supprimé.")
 
         File.query.filter_by(id=file_id).delete()
         db.session.commit()
@@ -315,16 +348,24 @@ def images():
     return render_template("images.html", files=files)
 
 
+@app.route("/images/download/<string:filename>", methods=["POST"])
+@login_required
+def download(filename):
+
+    bytes_file = download_blob(source_blob_name=filename)
+
+    return send_file(
+        BytesIO(bytes_file),
+        attachment_filename=filename
+    )
+
+
 @app.route("/images/delete/<int:post_id>", methods=["POST"])
 @login_required
 def delete(post_id):
 
-    filepath = os.path.join(
-        "./static/uploads/", File.query.filter_by(id=post_id).first().filename
-    )
-    if os.path.exists(filepath):
-        os.remove(filepath)
-        # logging.info(f"{current_user.username} - {filepath} supprimé.")
+    delete_blob(File.query.filter_by(id=post_id).first().filename)
+    # logging.info(f"{current_user.username} - {filepath} supprimé.")
 
     File.query.filter_by(id=post_id).delete()
     db.session.commit()
@@ -348,12 +389,12 @@ def upload():
 
     if request.method == "POST":
 
-        if "file" not in request.files:
+        if "image" not in request.files:
             # logging.error(f"{current_user.username} - erreur d'envoi de fichier")
             flash("Pas de fichier!", "error")
             return redirect(url_for("upload"))
 
-        file = request.files["file"]
+        file = request.files["image"]
 
         if file.filename == "":
             # logging.error(f"{current_user.username} - erreur d'envoi de fichier")
@@ -362,17 +403,18 @@ def upload():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join("./static/uploads/", filename))
+
+            label, label_idx, _ = learner.predict(PILImage.create(file.stream))
+
+            raw_data = file.read()
+
+            upload_blob(source_file_name=raw_data, destination_blob_name=filename)
             # logging.info(f"{current_user.username} - {filename} sauvegardé")
 
             new_file = File(
                 username=current_user.username,
                 filename=file.filename,
                 uploaded_at=datetime.now(),
-            )
-
-            label, label_idx, _ = learner.predict(
-                os.path.join("./static/uploads/", filename)
             )
 
             db.session.add(new_file)
@@ -395,7 +437,11 @@ if __name__ == "__main__":
         print("Le fichier 'db.sqlite' a été supprimé.")
         build_sample_db()
 
-    learner = load_learner("model.pkl", cpu=True)
     args = get_args()
+
+    learner = load_learner("model.pkl", cpu=True)
+
+    storage_client = storage.Client.from_service_account_json("gcp-credentials.json")
+    bucket = storage_client.bucket("chef-oeuvre")
 
     app.run(host=args.host, port=args.port, debug=False)
