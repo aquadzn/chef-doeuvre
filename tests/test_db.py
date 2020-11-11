@@ -3,9 +3,8 @@ from datetime import datetime
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.security import generate_password_hash
-
-from main import User, File
 
 
 app = Flask("test")
@@ -35,7 +34,7 @@ def build_db():
         db.create_all()
         db.session.commit()
         return True
-    except:
+    except SQLAlchemyError:
         return False
 
 
@@ -51,7 +50,7 @@ def add_user():
         db.session.add(test_user)
         db.session.commit()
         return True
-    except:
+    except SQLAlchemyError:
         return False
 
 
@@ -67,7 +66,7 @@ def add_file():
         db.session.add(test_file)
         db.session.commit()
         return True
-    except:
+    except SQLAlchemyError:
         return False
 
 
@@ -76,7 +75,7 @@ def query_user():
         test_user = User.query.filter_by(username="test").first()
         assert isinstance(test_user, User)
         return True
-    except:
+    except SQLAlchemyError:
         return False
 
 
@@ -85,7 +84,7 @@ def query_file():
         test_file = File.query.filter_by(filename="test.jpg").first()
         assert isinstance(test_file, File)
         return True
-    except:
+    except SQLAlchemyError:
 
         return False
 
@@ -96,7 +95,7 @@ def delete_user():
         db.session.commit()
         assert User.query.filter_by(username="test") is None
         return True
-    except:
+    except SQLAlchemyError:
         return False
 
 
@@ -106,7 +105,7 @@ def delete_file():
         db.session.commit()
         assert File.query.filter_by(filename="test.jpg") is None
         return True
-    except:
+    except SQLAlchemyError:
         return False
 
 
@@ -115,7 +114,7 @@ def delete_db():
         os.remove("/tmp/test_db.sqlite")
         assert not os.path.exists("/tmp/test_db.sqlite")
         return True
-    except:
+    except SQLAlchemyError:
         return False
 
 

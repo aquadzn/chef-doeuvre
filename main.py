@@ -1,6 +1,4 @@
 import os
-import string
-import random
 import argparse
 
 # import logging
@@ -10,9 +8,6 @@ from datetime import datetime
 import config
 
 from google.cloud import storage
-
-import numpy as np
-import PIL
 
 from fastai.vision.all import load_learner, PILImage
 
@@ -29,7 +24,6 @@ from flask_login import (
 )
 
 from werkzeug.utils import secure_filename
-from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.security import generate_password_hash, check_password_hash
 
 

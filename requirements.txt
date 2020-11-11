@@ -8,4 +8,5 @@ fastai
 ipython
 google-cloud-storage
 black
+flake8
 pytest
