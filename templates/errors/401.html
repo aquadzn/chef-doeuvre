@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="columns is-mobile is-vcentered">
+    <div class="column">
+        <h1 class="title is-1">Accès non autorisé</h1>
+        <h2 class="subtitle">Désolé, vous n'avez pas accès à cette page.</h1>
+    </div>
+    <div class="column">
+        <img src="{{url_for('static', filename='img/404.png')}}" alt="404.png">
+    </div>
+</div>
+{% endblock %}

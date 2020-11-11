@@ -13,8 +13,8 @@
 {% endif %}
 {% endwith %}
 
-<div class="columns is-mobile">
-    <div class="column">
+<div class="columns is-multiline is-mobile is-centered">
+    <div class="column is-8">
         <h1 class="subtitle">Utilisateurs</h1>
         {% if users|length %}
         <div class="box">
@@ -24,6 +24,7 @@
                         <th>ID</th>
                         <th>Pseudonyme</th>
                         <th>Adresse mail</th>
+                        <th>Date de création</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -36,6 +37,9 @@
                         </td>
                         <td>
                             {{ user.email }}
+                        </td>
+                        <td>
+                            {{ user.created_at }}
                         </td>
                         <td>
                             <form action="/admin/dashboard/delete_user/{{ user.id }}" method="post">
@@ -54,8 +58,9 @@
         </div>
         {% endif %}
     </div>
-
-    <div class="column">
+</div>
+<div class="columns is-multiline is-mobile is-centered">
+    <div class="column is-8">
         <h1 class="subtitle">Fichiers</h1>
         {% if files|length %}
         <div class="box">
@@ -64,7 +69,6 @@
                     <tr>
                         <th>ID</th>
                         <th>Utilisateur</th>
-                        <th>Aperçu</th>
                         <th>Nom de fichier</th>
                         <th>Date d'envoi</th>
                         <th>Actions</th>
@@ -78,15 +82,10 @@
                             <i>{{ file.username }}</i>
                         </td>
                         <td>
-                            <figure class="image is-64x64">
-                                <img src="./static/uploads/{{ file.filename }}" alt="{{ file.filename }}">
-                            </figure>
-                        </td>
-                        <td>
                             <i>{{ file.filename }}</i>
                         </td>
                         <td>
-                            {{ file.date }}
+                            {{ file.uploaded_at }}
                         </td>
                         <td>
                             <form action="/admin/dashboard/delete_file/{{ file.id }}" method="post">

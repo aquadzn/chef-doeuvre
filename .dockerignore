@@ -4,7 +4,3 @@ __pycache__
 .pytest_cache
 */.pytest_cache
 .vscode
-*.pkl
-gcp-credentials.json
-config.py
-*.sqlite

@@ -6,3 +6,4 @@ torchvision==0.7+cpu
 -f https://download.pytorch.org/whl/torch_stable.html
 fastai
 ipython
+google-cloud-storage
