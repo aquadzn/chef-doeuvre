@@ -5,7 +5,7 @@
 # Install local dependencies
 make setup
 
-# Lint Python files and remove cache folders
+# Lint, format and check for security issues in Python files. Also remove cache folders
 make lint
 
 # Run Python tests
@@ -18,7 +18,13 @@ make run
 make build_docker
 
 # Deploy to GCP Cloud Run
-make deploy_gcp
+make deploy_gcp IMAGE_NAME=chef-oeuvre SERVICE_NAME=chef-oeuvre
+
+# Delete Cloud Run service
+make delete_service SERVICE_NAME=chef-oeuvre
+
+# Delete image from gcr.io
+make delete_image IMAGE_NAME=chef-oeuvre
 
 # Create GCP Bucket with name
 make create_bucket BUCKET_NAME=uploads
