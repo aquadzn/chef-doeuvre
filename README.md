@@ -1,5 +1,8 @@
 # Chef d'oeuvre
 
+---
+
+### Setup:
 
 ```bash
 # Install local dependencies
@@ -16,19 +19,44 @@ make run
 
 # Build image with Docker locally
 make build_docker
+```
+
+### Deployment (in order)
+
+```bash
+# Deploy to GCP Cloud Functions
+make deploy_cloud_functions FUNCTION_NAME=model-chef-oeuvre
+```
+
+**Grab the URL** of the function and place it in the *url* parameter for the POST request in `main_gcp.py` arround line 408
+
+```bash
+# Deploy image to GCR
+make deploy_image IMAGE_NAME=image-chef-oeuvre
 
 # Deploy to GCP Cloud Run
-make deploy_gcp IMAGE_NAME=chef-oeuvre SERVICE_NAME=chef-oeuvre
+make deploy_cloud_run CLOUD_RUN_NAME=app-chef-oeuvre IMAGE_NAME=image-chef-oeuvre
 
-# Delete Cloud Run service
-make delete_service SERVICE_NAME=chef-oeuvre
+```
+
+**Grab the URL** and you're done!
+
+
+### Utils
+
+```bash
+# Delete Cloud Run
+make delete_cloud_run CLOUD_RUN_NAME=app-chef-oeuvre
+
+# Delete Cloud Functions
+make delete_cloud_functions FUNCTION_NAME=model-chef-oeuvre
 
 # Delete image from gcr.io
-make delete_image IMAGE_NAME=chef-oeuvre
+make delete_image IMAGE_NAME=image-chef-oeuvre
 
-# Create GCP Bucket with name
+# Create a GCP Bucket with name
 make create_bucket BUCKET_NAME=uploads
 
-# Clean GCP Bucket
+# Remove all files in a GCP Bucket
 make clean_bucket BUCKET_NAME=uploads
 ```

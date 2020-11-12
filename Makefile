@@ -1,6 +1,6 @@
 HOST=0.0.0.0
 PORT=8080
-BUCKET_NAME=chef-oeuvre
+BUCKET_NAME=uploads-chef-oeuvre
 CLOUD_RUN_NAME=app-chef-oeuvre
 IMAGE_NAME=image-chef-oeuvre
 FUNCTION_NAME=model-chef-oeuvre

@@ -159,7 +159,7 @@ else:
     build_sample_db()
 
 storage_client = storage.Client.from_service_account_json("gcp-credentials.json")
-bucket = storage_client.bucket("chef-oeuvre")
+bucket = storage_client.bucket("uploads-chef-oeuvre)
 
 
 # ------------------- MAIN -------------------
@@ -405,7 +405,7 @@ def upload():
             filename = secure_filename(file.filename)
 
             response = r.post(
-                url="http://127.0.0.1:5001/run",  # URL Cloud Functions
+                url=config.CLOUD_FUNCTION_URL,  # URL Cloud Functions
                 headers={"Content-Type": "application/octet-stream"},
                 data=file.stream,
             ).json()
