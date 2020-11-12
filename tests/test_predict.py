@@ -9,5 +9,5 @@ def predict(filename):
 
 
 def test_predict():
-    preds = predict("./static/img/welcome.png")
+    preds = predict("/home/william/Desktop/chef-oeuvre/tests/guacamole.jpg")
     assert preds is not None and len(preds) == 3
