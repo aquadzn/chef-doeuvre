@@ -7,7 +7,6 @@ RUN mkdir -p /app
 COPY . /app
 WORKDIR /app/
 
-RUN pip install flask flask-sqlalchemy flask-login ipython google-cloud-storage requests gunicorn flake8 black bandit
-RUN make lint
+RUN pip install flask flask-sqlalchemy flask-login ipython google-cloud-storage requests gunicorn
 
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "1" ,"--threads", "8", "--timeout", "0" ,"main_gcp:app"]

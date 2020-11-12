@@ -54,6 +54,9 @@ make delete_cloud_functions FUNCTION_NAME=model-chef-oeuvre
 # Delete image from gcr.io
 make delete_cloud_image IMAGE_NAME=image-chef-oeuvre
 
+# Delete Function, Run and Image
+make delete_all
+
 # Create a GCP Bucket with name
 make create_bucket BUCKET_NAME=uploads
 

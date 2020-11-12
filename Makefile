@@ -62,10 +62,16 @@ delete_cloud_run:
 
 
 delete_cloud_functions:
-	gcloud run services delete $(FUNCTION_NAME) --platform=managed --region=us-east1
+	gcloud functions delete $(FUNCTION_NAME) --region=us-east1
 
 
 delete_cloud_image:
+	gcloud container images delete --force-delete-tags gcr.io/ml-dl-77/$(IMAGE_NAME)
+
+
+delete_all:
+	gcloud run services delete $(CLOUD_RUN_NAME) --platform=managed --region=us-east1
+	gcloud functions delete $(FUNCTION_NAME) --region=us-east1
 	gcloud container images delete --force-delete-tags gcr.io/ml-dl-77/$(IMAGE_NAME)
 
 
