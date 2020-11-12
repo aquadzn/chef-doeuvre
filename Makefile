@@ -1,8 +1,9 @@
 HOST=0.0.0.0
 PORT=8080
 BUCKET_NAME=chef-oeuvre
-SERVICE_NAME=chef-oeuvre
-IMAGE_NAME=chef-oeuvre
+CLOUD_RUN_NAME=app-chef-oeuvre
+IMAGE_NAME=image-chef-oeuvre
+FUNCTION_NAME=model-chef-oeuvre
 
 setup:
 	pip install -r requirements.txt
@@ -31,9 +32,23 @@ build_docker:
 	docker build -t chef-oeuvre .
 
 
-deploy_gcp:
+deploy_cloud_functions:
+	gcloud functions deploy $(FUNCTION_NAME) \
+		--source=cloud_functions/ \
+		--entry-point=run \
+		--runtime=python38 \
+		--memory=1024MB \
+		--trigger-http \
+		--region=us-east1 \
+		--allow-unauthenticated
+
+
+deploy_cloud_image:
 	gcloud builds submit --tag gcr.io/ml-dl-77/$(IMAGE_NAME)
-	gcloud run deploy $(SERVICE_NAME) \
+
+
+deploy_cloud_run:
+	gcloud run deploy $(CLOUD_RUN_NAME) \
 		--image gcr.io/ml-dl-77/$(IMAGE_NAME) \
 		--platform=managed \
 		--allow-unauthenticated \
@@ -42,8 +57,12 @@ deploy_gcp:
 		--memory=2Gi
 
 
-delete service:
-	gcloud run services delete $(SERVICE_NAME) --platform=managed --region=us-east1
+delete_cloud_run:
+	gcloud run services delete $(CLOUD_RUN_NAME) --platform=managed --region=us-east1
+
+
+delete_cloud_functions:
+	gcloud run services delete $(FUNCTION_NAME) --platform=managed --region=us-east1
 
 
 delete_image:

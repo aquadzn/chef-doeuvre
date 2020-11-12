@@ -6,9 +6,9 @@ from datetime import datetime
 
 import config
 
-from google.cloud import storage
+import requests as r
 
-from fastai.vision.all import load_learner, PILImage
+from google.cloud import storage
 
 from flask import Flask, flash, redirect, request, url_for, render_template, send_file
 
@@ -98,6 +98,7 @@ class File(db.Model):
     username = db.Column(db.String(100))
     filename = db.Column(db.String(200))
     label = db.Column(db.String(200))
+    confidence = db.Column(db.Float)
     uploaded_at = db.Column(db.DateTime)
 
 
@@ -156,8 +157,6 @@ else:
     os.remove("db.sqlite")
     print("Le fichier 'db.sqlite' a été supprimé.")
     build_sample_db()
-
-learner = load_learner("model.pkl", cpu=True)
 
 storage_client = storage.Client.from_service_account_json("gcp-credentials.json")
 bucket = storage_client.bucket("chef-oeuvre")
@@ -405,8 +404,14 @@ def upload():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
 
-            label, label_idx, _ = learner.predict(PILImage.create(file.stream))
-            label = label.capitalize().replace("_", " ")
+            response = r.post(
+                url="http://127.0.0.1:5001/run",  # URL Cloud Functions
+                headers={"Content-Type": "application/octet-stream"},
+                data=file.stream,
+            ).json()
+
+            label = response["label"].capitalize().replace("_", " ")
+            confidence = response["confidence"]
 
             raw_data = file.read()
 
@@ -420,6 +425,7 @@ def upload():
                 username=current_user.username,
                 filename=file.filename,
                 label=label,
+                confidence=confidence,
                 uploaded_at=datetime.now(),
             )
 
@@ -428,7 +434,7 @@ def upload():
 
             # logging.info(f"{current_user.username} - record SQL ajouté")
             # flash("Fichier envoyé!", "success")
-            flash(f"Détecté: {label}", "success")
+            flash(f"Détecté: {label} ({confidence}%)", "success")
             return redirect(request.url)
 
     return render_template("upload.html", username=current_user.username)

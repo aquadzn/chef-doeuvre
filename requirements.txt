@@ -6,6 +6,7 @@ torchvision==0.7+cpu
 -f https://download.pytorch.org/whl/torch_stable.html
 fastai
 ipython
+requests
 google-cloud-storage
 black
 flake8

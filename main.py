@@ -9,7 +9,8 @@ import config
 
 from google.cloud import storage
 
-from fastai.vision.all import load_learner, PILImage
+from fastai.learner import load_learner
+from fastai.vision.core import PILImage
 
 from flask import Flask, flash, redirect, request, url_for, render_template, send_file
 
@@ -108,6 +109,7 @@ class File(db.Model):
     username = db.Column(db.String(100))
     filename = db.Column(db.String(200))
     label = db.Column(db.String(200))
+    confidence = db.Column(db.Float)
     uploaded_at = db.Column(db.DateTime)
 
 
@@ -402,8 +404,9 @@ def upload():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
 
-            label, label_idx, _ = learner.predict(PILImage.create(file.stream))
+            label, label_idx, preds = learner.predict(PILImage.create(file.stream))
             label = label.capitalize().replace("_", " ")
+            confidence = round(preds[label_idx] * 100, 2)
 
             raw_data = file.read()
 
@@ -417,6 +420,7 @@ def upload():
                 username=current_user.username,
                 filename=file.filename,
                 label=label,
+                confidence=confidence,
                 uploaded_at=datetime.now(),
             )
 

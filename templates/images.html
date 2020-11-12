@@ -34,6 +34,7 @@
                             <th>ID</th>
                             <th>Nom de fichier</th>
                             <th>Label détecté</th>
+                            <th>Confiance (100%)</th>
                             <th>Date d'envoi</th>
                             <th>Télécharger</th>
                             <th>Supprimer</th>
@@ -50,6 +51,9 @@
                             </td>
                             <td>
                                 {{ file.label }}
+                            </td>
+                            <td>
+                                {{ file.confidence }}
                             </td>
                             <td>
                                 {{ file.uploaded_at }}
