@@ -32,7 +32,7 @@ make deploy_cloud_functions FUNCTION_NAME=model-chef-oeuvre
 
 ```bash
 # Deploy image to GCR
-make deploy_image IMAGE_NAME=image-chef-oeuvre
+make deploy_cloud_image IMAGE_NAME=image-chef-oeuvre
 
 # Deploy to GCP Cloud Run
 make deploy_cloud_run CLOUD_RUN_NAME=app-chef-oeuvre IMAGE_NAME=image-chef-oeuvre
@@ -52,7 +52,7 @@ make delete_cloud_run CLOUD_RUN_NAME=app-chef-oeuvre
 make delete_cloud_functions FUNCTION_NAME=model-chef-oeuvre
 
 # Delete image from gcr.io
-make delete_image IMAGE_NAME=image-chef-oeuvre
+make delete_cloud_image IMAGE_NAME=image-chef-oeuvre
 
 # Create a GCP Bucket with name
 make create_bucket BUCKET_NAME=uploads
