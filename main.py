@@ -449,6 +449,6 @@ if __name__ == "__main__":
     learner = load_learner("model.pkl", cpu=True)
 
     storage_client = storage.Client.from_service_account_json("gcp-credentials.json")
-    bucket = storage_client.bucket("uploads-chef-oeuvre)
+    bucket = storage_client.bucket("uploads-chef-oeuvre")
 
     app.run(host=args.host, port=args.port, debug=False)

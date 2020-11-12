@@ -6,3 +6,5 @@ __pycache__
 .vscode
 *.sqlite
 main.py
+cloud_functions/
+tests/

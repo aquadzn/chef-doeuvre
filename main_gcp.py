@@ -159,7 +159,7 @@ else:
     build_sample_db()
 
 storage_client = storage.Client.from_service_account_json("gcp-credentials.json")
-bucket = storage_client.bucket("uploads-chef-oeuvre)
+bucket = storage_client.bucket("uploads-chef-oeuvre")
 
 
 # ------------------- MAIN -------------------
