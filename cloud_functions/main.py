@@ -15,6 +15,7 @@ def run(request):
 
     files = request.data
     label, label_idx, preds = learner.predict(PILImage.create(files))
+    preds = preds.numpy()
 
     return jsonify(
         label=label,

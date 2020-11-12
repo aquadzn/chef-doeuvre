@@ -406,6 +406,7 @@ def upload():
 
             label, label_idx, preds = learner.predict(PILImage.create(file.stream))
             label = label.capitalize().replace("_", " ")
+            preds = preds.numpy()
             confidence = round(preds[label_idx] * 100, 2)
 
             raw_data = file.read()
