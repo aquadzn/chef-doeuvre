@@ -4,6 +4,25 @@
 
 ### Setup:
 
+Create a config.py with this structure:
+
+```python
+import os
+
+
+FLASK_KEY = os.urandom(32)
+JSON_GCP = "./gcp-credentials.json"
+CLOUD_FUNCTION_URL = "cloud_function_url"
+
+POSTGRE_URI = "postgres://your_url"
+
+ADMIN_MAIL = "mail"
+ADMIN_USERNAME = "admin"
+ADMIN_PWD = "admin"
+```
+
+then
+
 ```bash
 # Install local dependencies
 make setup

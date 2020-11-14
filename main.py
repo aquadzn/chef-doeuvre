@@ -1,4 +1,3 @@
-import os
 import argparse
 
 # import logging
@@ -33,8 +32,11 @@ app = Flask(__name__)
 
 def get_args():
     parser = argparse.ArgumentParser(description="Run Flask web server")
-    parser.add_argument("--host", type=str, help="Hostname (default: 127.0.0.1")
-    parser.add_argument("--port", type=int, help="Port (default: 5000")
+    parser.add_argument("--host", type=str, help="Hostname (default: 127.0.0.1)")
+    parser.add_argument("--port", type=int, help="Port (default: 5000)")
+    parser.add_argument(
+        "--debug", type=bool, default=False, help="Port (default: 5000)"
+    )
 
     args = parser.parse_args()
     return args
@@ -86,8 +88,7 @@ def allowed_file(filename):
 
 
 app.config["SECRET_KEY"] = config.FLASK_KEY
-app.config["SQLALCHEMY_DATABASE_URI"] = config.FLASK_DB
-# app.config["UPLOAD_FOLDER"] = config.FLASK_UPLOAD
+app.config["SQLALCHEMY_DATABASE_URI"] = config.POSTGRE_URI
 app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
 app.register_error_handler(404, page_not_found)
@@ -126,40 +127,6 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     return render_template("errors/401.html"), 401
-
-
-def build_sample_db():
-
-    db.drop_all()
-    db.create_all()
-
-    admin_user = User(
-        username="admin",
-        email="admin@mail.com",
-        password=generate_password_hash("admin", method="sha256"),
-        created_at=datetime.now(),
-    )
-    db.session.add(admin_user)
-
-    usernames = [
-        "jean",
-        "william",
-        "sylvere",
-    ]
-
-    for i in range(len(usernames)):
-        test_user = User(
-            username=usernames[i],
-            email=f"{usernames[i]}@mail.com",
-            password=generate_password_hash("azerty", method="sha256"),
-            created_at=datetime.now(),
-        )
-        print(f"Utilisateur '{usernames[i]}' crée.")
-        print("Mot de passe: azerty")
-        db.session.add(test_user)
-
-    db.session.commit()
-    return
 
 
 # ------------------- MAIN -------------------
@@ -438,13 +405,6 @@ def upload():
 
 if __name__ == "__main__":
 
-    if not os.path.exists("db.sqlite"):
-        build_sample_db()
-    else:
-        os.remove("db.sqlite")
-        print("Le fichier 'db.sqlite' a été supprimé.")
-        build_sample_db()
-
     args = get_args()
 
     learner = load_learner("model.pkl", cpu=True)
@@ -452,4 +412,4 @@ if __name__ == "__main__":
     storage_client = storage.Client.from_service_account_json("gcp-credentials.json")
     bucket = storage_client.bucket("uploads-chef-oeuvre")
 
-    app.run(host=args.host, port=args.port, debug=False)
+    app.run(host=args.host, port=args.port, debug=args.debug)

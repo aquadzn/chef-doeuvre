@@ -1,5 +1,3 @@
-import os
-
 # import logging
 from io import BytesIO
 from datetime import datetime
@@ -75,8 +73,7 @@ def allowed_file(filename):
 
 
 app.config["SECRET_KEY"] = config.FLASK_KEY
-app.config["SQLALCHEMY_DATABASE_URI"] = config.FLASK_DB
-# app.config["UPLOAD_FOLDER"] = config.FLASK_UPLOAD
+app.config["SQLALCHEMY_DATABASE_URI"] = config.POSTGRE_URI
 app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
 app.register_error_handler(404, page_not_found)
@@ -116,47 +113,6 @@ def load_user(user_id):
 def unauthorized():
     return render_template("errors/401.html"), 401
 
-
-def build_sample_db():
-
-    db.drop_all()
-    db.create_all()
-
-    admin_user = User(
-        username="admin",
-        email="admin@mail.com",
-        password=generate_password_hash("admin", method="sha256"),
-        created_at=datetime.now(),
-    )
-    db.session.add(admin_user)
-
-    usernames = [
-        "jean",
-        "william",
-        "sylvere",
-    ]
-
-    for i in range(len(usernames)):
-        test_user = User(
-            username=usernames[i],
-            email=f"{usernames[i]}@mail.com",
-            password=generate_password_hash("azerty", method="sha256"),
-            created_at=datetime.now(),
-        )
-        print(f"Utilisateur '{usernames[i]}' crée.")
-        print("Mot de passe: azerty")
-        db.session.add(test_user)
-
-    db.session.commit()
-    return
-
-
-if not os.path.exists("db.sqlite"):
-    build_sample_db()
-else:
-    os.remove("db.sqlite")
-    print("Le fichier 'db.sqlite' a été supprimé.")
-    build_sample_db()
 
 storage_client = storage.Client.from_service_account_json("gcp-credentials.json")
 bucket = storage_client.bucket("uploads-chef-oeuvre")

@@ -136,3 +136,7 @@ def test_query_user():
 
 def test_query_file():
     assert query_file()
+
+
+def test_delete_db():
+    assert delete_db()
