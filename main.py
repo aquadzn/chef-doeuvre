@@ -1,8 +1,9 @@
+import os
 import argparse
 
 # import logging
-from io import BytesIO
 from datetime import datetime
+from tempfile import NamedTemporaryFile
 
 import config
 
@@ -42,17 +43,18 @@ def get_args():
     return args
 
 
-def upload_blob(source_file_name, destination_blob_name):
+def upload_blob(source, destination_blob_name):
 
     blob = bucket.blob(destination_blob_name)
-    blob.upload_from_string(source_file_name)
+    blob.upload_from_string(source.read(), content_type=source.content_type)
 
     # print(f"File {source_file_name} uploaded to {destination_blob_name}.")
 
 
 def download_blob(source_blob_name):
 
-    blob = bucket.blob(source_blob_name)
+    blob = bucket.get_blob(source_blob_name)
+
     return blob.download_as_bytes()
 
     # print(f"Blob {source_blob_name} downloaded to {destination_file_name}.")
@@ -60,14 +62,10 @@ def download_blob(source_blob_name):
 
 def delete_blob(blob_name):
 
-    blob = bucket.blob(blob_name)
+    blob = bucket.get_blob(blob_name)
     blob.delete()
 
     print(f"Blob {blob_name} deleted.")
-
-
-# def request_to_image(raw):
-#     return open_image(BytesIO(raw))
 
 
 def page_not_found(e):
@@ -88,7 +86,7 @@ def allowed_file(filename):
 
 
 app.config["SECRET_KEY"] = config.FLASK_KEY
-app.config["SQLALCHEMY_DATABASE_URI"] = config.POSTGRE_URI
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/test_db.db"
 app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
 app.register_error_handler(404, page_not_found)
@@ -127,6 +125,40 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     return render_template("errors/401.html"), 401
+
+
+def build_sample_db():
+
+    db.drop_all()
+    db.create_all()
+
+    admin_user = User(
+        username="admin",
+        email="admin@mail.com",
+        password=generate_password_hash("admin", method="sha256"),
+        created_at=datetime.now(),
+    )
+    db.session.add(admin_user)
+
+    usernames = [
+        "jean",
+        "william",
+        "sylvere",
+    ]
+
+    for i in range(len(usernames)):
+        test_user = User(
+            username=usernames[i],
+            email=f"{usernames[i]}@mail.com",
+            password=generate_password_hash("azerty", method="sha256"),
+            created_at=datetime.now(),
+        )
+        print(f"Utilisateur '{usernames[i]}' crée.")
+        print("Mot de passe: azerty")
+        db.session.add(test_user)
+
+    db.session.commit()
+    return
 
 
 # ------------------- MAIN -------------------
@@ -306,6 +338,43 @@ def profile():
     )
 
 
+@app.route("/profile/delete/account")
+@login_required
+def delete_account():
+
+    blobs = storage_client.list_blobs(
+        bucket_or_name="uploads-chef-oeuvre", prefix=f"{current_user.username}/"
+    )
+    for b in blobs:
+        b.delete()
+
+    File.query.filter_by(username=current_user.username).delete()
+    User.query.filter_by(username=current_user.username).delete()
+
+    logout_user()
+    db.session.commit()
+
+    return redirect(url_for("index"))
+
+
+@app.route("/profile/delete/images")
+@login_required
+def delete_all():
+
+    blobs = storage_client.list_blobs(
+        bucket_or_name="uploads-chef-oeuvre", prefix=f"{current_user.username}/"
+    )
+    for b in blobs:
+        b.delete()
+
+    File.query.filter_by(username=current_user.username).delete()
+    db.session.commit()
+
+    # logging.info(f"{current_user.username} - record SQL #{post_id} supprimé.")
+    flash("Toutes vos images ont été supprimées.")
+    return redirect(url_for("images"))
+
+
 @app.route("/images")
 @login_required
 def images():
@@ -316,16 +385,20 @@ def images():
     return render_template("images.html", files=files)
 
 
-@app.route("/images/download/<string:filename>", methods=["POST"])
+@app.route("/images/download/<string:filename>")
 @login_required
 def download(filename):
 
-    bytes_file = download_blob(source_blob_name=filename)
+    blob = bucket.get_blob(f"{current_user.username}/{filename}")
+    # url = blob.generate_signed_url(expiration=10, version='v4')
 
-    return send_file(BytesIO(bytes_file), attachment_filename=filename)
+    with NamedTemporaryFile() as file_obj:
+        blob.download_to_filename(file_obj.name)
+
+        return send_file(file_obj.name, attachment_filename=filename)
 
 
-@app.route("/images/delete/<int:post_id>", methods=["POST"])
+@app.route("/images/delete/<int:post_id>")
 @login_required
 def delete(post_id):
 
@@ -334,7 +407,7 @@ def delete(post_id):
     )
     # logging.info(f"{current_user.username} - {filepath} supprimé.")
 
-    File.query.filter_by(id=post_id).delete()
+    File.query.filter_by(id=post_id).delete()  # .first() au cas où ?
     db.session.commit()
 
     # logging.info(f"{current_user.username} - record SQL #{post_id} supprimé.")
@@ -361,7 +434,7 @@ def upload():
             flash("Pas de fichier!", "error")
             return redirect(url_for("upload"))
 
-        file = request.files["image"]
+        file = request.files.get("image")
 
         if file.filename == "":
             # logging.error(f"{current_user.username} - erreur d'envoi de fichier")
@@ -371,18 +444,16 @@ def upload():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
 
+            upload_blob(
+                source=file,
+                destination_blob_name=f"{current_user.username}/{filename}",
+            )
+            # logging.info(f"{current_user.username} - {filename} sauvegardé")
+
             label, label_idx, preds = learner.predict(PILImage.create(file.stream))
             label = label.capitalize().replace("_", " ")
             preds = preds.numpy()
             confidence = round(preds[label_idx] * 100, 2)
-
-            raw_data = file.read()
-
-            upload_blob(
-                source_file_name=raw_data,
-                destination_blob_name=f"{current_user.username}/{filename}",
-            )
-            # logging.info(f"{current_user.username} - {filename} sauvegardé")
 
             new_file = File(
                 username=current_user.username,
@@ -397,13 +468,20 @@ def upload():
 
             # logging.info(f"{current_user.username} - record SQL ajouté")
             # flash("Fichier envoyé!", "success")
-            flash(f"Détecté: {label}", "success")
+            flash(f"Détecté: {label} ({confidence}%)", "success")
             return redirect(request.url)
 
     return render_template("upload.html", username=current_user.username)
 
 
 if __name__ == "__main__":
+
+    if not os.path.exists("db.sqlite"):
+        build_sample_db()
+    else:
+        os.remove("db.sqlite")
+        print("Le fichier 'db.sqlite' a été supprimé.")
+        build_sample_db()
 
     args = get_args()
 

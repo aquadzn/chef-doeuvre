@@ -1,6 +1,6 @@
 # import logging
-from io import BytesIO
 from datetime import datetime
+from tempfile import NamedTemporaryFile
 
 import config
 
@@ -27,17 +27,18 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 
-def upload_blob(source_file_name, destination_blob_name):
+def upload_blob(source, destination_blob_name):
 
     blob = bucket.blob(destination_blob_name)
-    blob.upload_from_string(source_file_name)
+    blob.upload_from_string(source.read(), content_type=source.content_type)
 
     # print(f"File {source_file_name} uploaded to {destination_blob_name}.")
 
 
 def download_blob(source_blob_name):
 
-    blob = bucket.blob(source_blob_name)
+    blob = bucket.get_blob(source_blob_name)
+
     return blob.download_as_bytes()
 
     # print(f"Blob {source_blob_name} downloaded to {destination_file_name}.")
@@ -45,14 +46,10 @@ def download_blob(source_blob_name):
 
 def delete_blob(blob_name):
 
-    blob = bucket.blob(blob_name)
+    blob = bucket.get_blob(blob_name)
     blob.delete()
 
     print(f"Blob {blob_name} deleted.")
-
-
-# def request_to_image(raw):
-#     return open_image(BytesIO(raw))
 
 
 def page_not_found(e):
@@ -295,6 +292,43 @@ def profile():
     )
 
 
+@app.route("/profile/delete/images")
+@login_required
+def delete_all():
+
+    blobs = storage_client.list_blobs(
+        bucket_or_name="uploads-chef-oeuvre", prefix=f"{current_user.username}/"
+    )
+    for b in blobs:
+        b.delete()
+
+    File.query.filter_by(username=current_user.username).delete()
+    db.session.commit()
+
+    # logging.info(f"{current_user.username} - record SQL #{post_id} supprimé.")
+    flash("Toutes vos images ont été supprimées.")
+    return redirect(url_for("images"))
+
+
+@app.route("/profile/delete/account")
+@login_required
+def delete_account():
+
+    blobs = storage_client.list_blobs(
+        bucket_or_name="uploads-chef-oeuvre", prefix=f"{current_user.username}/"
+    )
+    for b in blobs:
+        b.delete()
+
+    File.query.filter_by(username=current_user.username).delete()
+    User.query.filter_by(username=current_user.username).delete()
+
+    logout_user()
+    db.session.commit()
+
+    return redirect(url_for("index"))
+
+
 @app.route("/images")
 @login_required
 def images():
@@ -305,16 +339,20 @@ def images():
     return render_template("images.html", files=files)
 
 
-@app.route("/images/download/<string:filename>", methods=["POST"])
+@app.route("/images/download/<string:filename>")
 @login_required
 def download(filename):
 
-    bytes_file = download_blob(source_blob_name=filename)
+    blob = bucket.get_blob(f"{current_user.username}/{filename}")
+    # url = blob.generate_signed_url(expiration=10, version='v4')
 
-    return send_file(BytesIO(bytes_file), attachment_filename=filename)
+    with NamedTemporaryFile() as file_obj:
+        blob.download_to_filename(file_obj.name)
+
+        return send_file(file_obj.name, attachment_filename=filename)
 
 
-@app.route("/images/delete/<int:post_id>", methods=["POST"])
+@app.route("/images/delete/<int:post_id>")
 @login_required
 def delete(post_id):
 
@@ -350,7 +388,7 @@ def upload():
             flash("Pas de fichier!", "error")
             return redirect(url_for("upload"))
 
-        file = request.files["image"]
+        file = request.files.get("image")
 
         if file.filename == "":
             # logging.error(f"{current_user.username} - erreur d'envoi de fichier")
@@ -360,6 +398,12 @@ def upload():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
 
+            upload_blob(
+                source=file,
+                destination_blob_name=f"{current_user.username}/{filename}",
+            )
+            # logging.info(f"{current_user.username} - {filename} sauvegardé")
+
             response = r.post(
                 url=config.CLOUD_FUNCTION_URL,  # URL Cloud Functions
                 headers={"Content-Type": "application/octet-stream"},
@@ -368,14 +412,6 @@ def upload():
 
             label = response["label"].capitalize().replace("_", " ")
             confidence = response["confidence"]
-
-            raw_data = file.read()
-
-            upload_blob(
-                source_file_name=raw_data,
-                destination_blob_name=f"{current_user.username}/{filename}",
-            )
-            # logging.info(f"{current_user.username} - {filename} sauvegardé")
 
             new_file = File(
                 username=current_user.username,

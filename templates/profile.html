@@ -4,11 +4,6 @@
 <div class="columns is-centered">
     <div class="column is-12-mobile is-half-desktop">
         <div class="card">
-            <div class="card-image">
-                <figure class="image is-128x128">
-                    <img src="https://storage.googleapis.com/model-chef-oeuvre/static/img/user.png" alt="User avatar image">
-                </figure>
-            </div>
             <div class="card-content">
                 <div class="content">
                     <p class="title is-4">{{ username }}</p>
@@ -24,10 +19,12 @@
                 </div>
             </div>
             <footer class="card-footer">
-                <a href="{{ url_for('upload') }}" class="card-footer-item">Ajouter un fichier</a>
-                <a href="{{ url_for('images') }}" class="card-footer-item">Mes images</a>
+                <!-- AJOUTER UN MODAL POUR CONFIRMER LES CHOIX! -->
+                <a href="/profile/delete/images" class="card-footer-item">Supprimer toutes mes images</a>
+                <a href="/profile/delete/account" class="card-footer-item">Supprimer mon compte</a>
             </footer>
         </div>
     </div>
 </div>
+
 {% endblock %}

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import config
-from main import User, db
+from main_gcp import User, db
 
 from werkzeug.security import generate_password_hash
 
