@@ -3,7 +3,9 @@
 {% block content %}
 <div class="columns is-centered">
     <div class="column is-12-mobile is-half-desktop">
-        <h3 class="title">Mon compte</h3>
+        <div class="block">
+            <p class="title is-2 multiline">Mon compte</p>
+        </div>
         <div class="box">
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -39,9 +41,10 @@
                         Se souvenir de moi
                     </label>
                 </div>
-                <button class="button is-block is-info is-medium is-fullwidth">Connexion</button>
+                <button class="button is-block is-danger is-medium is-fullwidth">Connexion</button>
             </form>
         </div>
+        <p>Pas de compte ? <a href="{{ url_for('signup') }}"><u>Inscrivez-vous ici</u></a></p>
     </div>
 </div>
 

@@ -6,24 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Page</title>
     <link rel="shortcut icon" href="https://storage.googleapis.com/model-chef-oeuvre/static/img/favicon.ico" />
-    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&family=Rubik:wght@400;700&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
     <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
 </head>
-
-<style>
-    body {
-        background-image: linear-gradient(to top, #accbee 0%, #e7f0fd 100%);
-        font-family: 'Rubik', sans-serif;
-        font-weight: 700;
-    }
-
-    nav a,
-    button {
-        font-family: 'Karla', sans-serif;
-    }
-</style>
 
 <body>
     <section class="hero is-fullheight">
@@ -41,18 +29,15 @@
                             <span aria-hidden="true"></span>
                             <span aria-hidden="true"></span>
                             <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="navMenu" class="navbar-menu">
                         <div class="navbar-end">
                             {% if current_user.is_authenticated and current_user.id == 1 %}
-                            <a href="{{ url_for('admin_index') }}" class="navbar-item">
+                            <a href="{{ url_for('admin_index') }}" class="navbar-item multiline-navbar">
                                 Accueil
                             </a>
-                            <a href="{{ url_for('admin_dashboard') }}" class="navbar-item">
+                            <a href="{{ url_for('admin_dashboard') }}" class="navbar-item multiline-navbar">
                                 Tableau de bord
                             </a>
                             <span class="navbar-item">

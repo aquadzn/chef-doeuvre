@@ -2,17 +2,9 @@
 
 {% block content %}
 
-<style>
-    .table {
-        margin-left: auto;
-        margin-right: auto;
-        border-radius: 6px;
-        box-shadow: 0 .5em 1em -.125em rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .02);
-        padding: 2rem;
-    }
-</style>
-
-<h1 class="title">Mes images</h1>
+<div class="block">
+    <p class="title is-2 multiline">Mes images</p>
+</div>
 
 {% with messages = get_flashed_messages() %}
 {% if messages %}
@@ -43,33 +35,33 @@
                     <tbody>
                         {% for file in files %}
                         <tr>
-                            <th>{{ file.id }}</th>
-                            <td>
+                            <th class="py-2">{{ file.id }}</th>
+                            <td class="py-2">
                                 <span class="tag">
                                     {{ file.filename }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="py-2">
                                 {{ file.label }}
                             </td>
-                            <td>
+                            <td class="py-2">
                                 {{ file.confidence }}
                             </td>
-                            <td>
+                            <td class="py-2">
                                 {{ file.uploaded_at }}
                             </td>
-                            <td>
+                            <td class="py-2">
                                 <form action="/images/download/{{ file.filename }}" method="post">
-                                    <button type="submit" class="button is-info is-light is-small">
+                                    <button type="submit" class="button is-info is-small">
                                         <span class="icon is-small">
                                             <i class="fas fa-cloud-download-alt"></i>
                                         </span>
                                     </button>
                                 </form>
                             </td>
-                            <td>
+                            <td class="py-2">
                                 <form action="/images/delete/{{ file.id }}" method="post">
-                                    <button type="submit" class="button is-danger is-light is-small">
+                                    <button type="submit" class="button is-danger is-small">
                                         <span class="icon">
                                             <i class="fas fa-trash-alt"></i>
                                         </span>

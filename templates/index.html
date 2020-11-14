@@ -2,23 +2,33 @@
 
 {% block content %}
 <div class="columns is-vcentered is-centered">
-    <div class="column">
-        <h1 class="title has-text-left">Bonjour 👋</h1>
+    <div class="column is-6 is-offset-1 has-text-left">
         <div class="block">
-            <h1 class="title has-text-left">envie d'utiliser notre service ?</h1>
+            <p class="title is-1 multiline">Reconnaissance instantanée de nourriture</p>
+            <p class="subtitle is-4 multiline"></p>
         </div>
         <div class="block">
-            <p class="subtitle has-text-left">
-                Ajoutez simplement une image et laissez notre outil faire le travail.
+            <p>
+                <b>Mon Gueuleton</b> est un service de reconnaissance de nourriture
+                utilisant les dernières techniques de <i>deep learning</i> et de classification d'image.
             </p>
-            <p class="subtitle has-text-left">
-                Vos images sont stockées 24h sur nos serveurs avant d'être supprimées.
+            <br>
+            <p>
+                Toutes vos images sont supprimés de notre base de données au bout d'une semaine.
             </p>
+        </div>
+        <div class="block">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('upload') }}" class="button is-rounded is-danger">C'est parti</a>
+            {% else %}
+            <a href="{{ url_for('signup') }}" class="button is-rounded is-danger">C'est parti</a>
+            {% endif %}
         </div>
     </div>
 
-    <div class="column is-5">
-        <img src="https://storage.googleapis.com/model-chef-oeuvre/static/img/welcome.png" alt="welcome.png">
+    <div class="column">
+        <img src="https://caloriemama.ai/img/phone2b.png" alt="welcome.png" class="img-index">
+        <!-- <img src="https://i.ibb.co/5Y0H96c/3D.png" alt="welcome.png" class="img-index"> -->
     </div>
 </div>
 {% endblock %}

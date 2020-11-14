@@ -2,17 +2,9 @@
 
 {% block content %}
 
-<style>
-    .table {
-        margin-left: auto;
-        margin-right: auto;
-        border-radius: 6px;
-        box-shadow: 0 .5em 1em -.125em rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .02);
-        padding: 2rem;
-    }
-</style>
-
-<h1 class="title">Tableau de bord</h1>
+<div class="block">
+    <p class="title is-1 multiline">Tableau de bord</p>
+</div>
 
 {% with messages = get_flashed_messages() %}
 {% if messages %}
@@ -25,7 +17,7 @@
 
 <div class="columns is-multiline is-mobile is-centered">
     <div class="column is-8">
-        <h1 class="subtitle">Utilisateurs</h1>
+        <p class="subtitle">Utilisateurs</p>
         {% if users|length %}
         <div style="display: grid">
             <div class="table-container">
@@ -42,17 +34,17 @@
                     <tbody>
                         {% for user in users %}
                         <tr>
-                            <th>{{ user.id }}</th>
-                            <td>
+                            <th class="py-2">{{ user.id }}</th>
+                            <td class="py-2">
                                 {{ user.username }}
                             </td>
-                            <td>
+                            <td class="py-2">
                                 {{ user.email }}
                             </td>
-                            <td>
+                            <td class="py-2">
                                 {{ user.created_at }}
                             </td>
-                            <td>
+                            <td class="py-2">
                                 <form action="/admin/dashboard/delete_user/{{ user.id }}" method="post">
                                     <button type="submit" class="button is-danger is-light is-small">
                                         <span class="icon">
@@ -76,7 +68,7 @@
 </div>
 <div class="columns is-multiline is-mobile is-centered">
     <div class="column is-8">
-        <h1 class="subtitle">Fichiers</h1>
+        <p class="subtitle">Fichiers</p>
         {% if files|length %}
         <div style="display: grid">
             <div class="table-container">
@@ -93,19 +85,19 @@
                     <tbody>
                         {% for file in files %}
                         <tr>
-                            <th>{{ file.id }}</th>
-                            <td>
+                            <th class="py-2">{{ file.id }}</th>
+                            <td class="py-2">
                                 {{ file.username }}
                             </td>
-                            <td>
+                            <td class="py-2">
                                 <span class="tag">
                                     {{ file.filename }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="py-2">
                                 {{ file.uploaded_at }}
                             </td>
-                            <td>
+                            <td class="py-2">
                                 <form action="/admin/dashboard/delete_file/{{ file.id }}" method="post">
                                     <button type="submit" class="button is-danger is-light is-small">
                                         <span class="icon">

@@ -3,7 +3,9 @@
 {% block content %}
 <div class="columns is-centered">
     <div class="column is-12-mobile is-half-desktop">
-        <h3 class="title">Administrateur</h3>
+        <div class="block">
+            <p class="title is-1 multiline">Administrateur</p>
+        </div>
         <div class="box">
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -33,7 +35,7 @@
                         </span>
                     </div>
                 </div>
-                <button class="button is-block is-info is-medium is-fullwidth">Connexion</button>
+                <button class="button is-block is-danger is-medium is-fullwidth">Connexion</button>
             </form>
         </div>
     </div>

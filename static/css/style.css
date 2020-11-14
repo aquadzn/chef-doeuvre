@@ -1,0 +1,131 @@
+/* ------ base.html ------ */
+
+/* basic */
+
+body {
+    background-color: #f1faee;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #1d3557 !important;
+
+    /* #f1faee blanc */
+    /* #e63946 rouge */
+    /* #a8dadc bleu clair */
+    /* #457b9d bleu */
+    /* #1d3557 bleu foncé */
+}
+
+a {
+    color: #1d3557 !important;
+}
+
+a:not(.button):hover {
+    color: #457b9d !important;
+    background-color: transparent !important;
+}
+
+/* bulma */
+
+.is-1 {
+    font-weight: 800 !important;
+}
+
+.is-2 {
+    font-weight: 700 !important;
+}
+
+.is-4 {
+    font-weight: 600 !important;
+}
+
+.is-info {
+    color: #1d3557 !important;
+    background-color: #1d3557 !important;
+}
+
+.is-info:hover {
+    background-color: #182d4b !important;
+}
+
+.is-success {
+    background-color: #457b9d !important;
+}
+
+.title {
+    color: #1d3557 !important;
+}
+
+.subtitle {
+    color: #1d3557 !important;
+}
+
+.button {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #f1faee !important;
+}
+
+.input:focus {
+    border-color: #e63946;
+    box-shadow: 0 0 0 0.125em #e6394744;
+}
+
+/* others */
+
+.multiline {
+    background-image: linear-gradient(transparent calc(65% - 5px), #a8dadc 5px);
+    background-size: 0;
+    background-repeat: no-repeat;
+    display: inline;
+    transition: 0.5s ease;
+}
+
+.multiline:hover {
+    background-size: 100%;
+}
+
+@media screen and (min-width : 1025px) {
+    .multiline-navbar:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        display: block;
+        margin-top: 25px;
+        right: 0;
+        background: #457b9d;
+        transition: width .2s ease;
+        -webkit-transition: width .2s ease;
+    }
+    
+    .multiline-navbar:hover:after {
+        width: 100%;
+        left: 0;
+        background: #457b9d;
+    }
+}
+
+/* ------ index.html ------ */
+
+/* others */
+
+.img-index {
+    /* -o-transition: .5s;
+    -ms-transition: .5s;
+    -moz-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .5s; */
+    filter: drop-shadow(30px 15px 10px rgba(0, 0, 0, 0.219));
+}
+
+/* ------ images.html && admin/dashboard.html ------ */
+
+/* bulma */
+
+.table {
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 6px;
+    box-shadow: 0 .5em 1em -.125em rgba(10, 10, 10, .1), 0 0 0 1px rgba(10, 10, 10, .02);
+    padding: 2rem;
+}
