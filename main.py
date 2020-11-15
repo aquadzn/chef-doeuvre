@@ -8,6 +8,7 @@ from tempfile import NamedTemporaryFile
 import config
 
 from google.cloud import storage
+from google.cloud.exceptions import NotFound
 
 from fastai.learner import load_learner
 from fastai.vision.core import PILImage
@@ -62,10 +63,11 @@ def download_blob(source_blob_name):
 
 def delete_blob(blob_name):
 
-    blob = bucket.get_blob(blob_name)
-    blob.delete()
-
-    print(f"Blob {blob_name} deleted.")
+    try:
+        bucket.delete_blob(blob_name)
+        print(f"Blob {blob_name} deleted.")
+    except NotFound:
+        pass
 
 
 def page_not_found(e):
@@ -365,8 +367,7 @@ def delete_all():
     blobs = storage_client.list_blobs(
         bucket_or_name="uploads-chef-oeuvre", prefix=f"{current_user.username}/"
     )
-    for b in blobs:
-        b.delete()
+    bucket.delete_blobs(blobs=blobs)
 
     File.query.filter_by(username=current_user.username).delete()
     db.session.commit()
