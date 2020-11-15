@@ -405,6 +405,7 @@ def upload():
             )
             # logging.info(f"{current_user.username} - {filename} sauvegardé")
 
+            file.seek(0)
             response = r.post(
                 url=config.CLOUD_FUNCTION_URL,  # URL Cloud Functions
                 headers={"Content-Type": "application/octet-stream"},
