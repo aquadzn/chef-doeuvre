@@ -302,7 +302,10 @@ def delete_all():
     blobs = storage_client.list_blobs(
         bucket_or_name="uploads-chef-oeuvre", prefix=f"{current_user.username}/"
     )
-    bucket.delete_blobs(blobs=blobs)
+    for b in blobs:
+        b.delete()
+
+    bucket.delete_blobs(blobs=bucket.list_blobs(prefix=folder))
 
     File.query.filter_by(username=current_user.username).delete()
     db.session.commit()
