@@ -133,8 +133,8 @@ def build_sample_db():
     db.create_all()
 
     admin_user = User(
-        username="admin",
-        email="admin@mail.com",
+        username="admin".lower(),
+        email="admin@mail.com".lower(),
         password=generate_password_hash("admin", method="sha256"),
         created_at=datetime.now(),
     )
@@ -148,8 +148,8 @@ def build_sample_db():
 
     for i in range(len(usernames)):
         test_user = User(
-            username=usernames[i],
-            email=f"{usernames[i]}@mail.com",
+            username=usernames[i].lower(),
+            email=f"{usernames[i]}@mail.com".lower(),
             password=generate_password_hash("azerty", method="sha256"),
             created_at=datetime.now(),
         )
@@ -180,7 +180,7 @@ def login():
 @app.route("/login", methods=["POST"])
 def login_post():
 
-    username = request.form.get("username")
+    username = request.form.get("username").lower()
     password = request.form.get("password")
     remember = True if request.form.get("remember") else False
 
@@ -205,29 +205,30 @@ def signup():
 @app.route("/signup", methods=["POST"])
 def signup_post():
 
-    username = request.form.get("username")
-    email = request.form.get("email")
+    username = request.form.get("username").lower()
+    email = request.form.get("email").lower()
     password = request.form.get("password")
 
-    user = User.query.filter_by(email=email).first()
+    user_name = User.query.filter_by(username=username).first()
+    user_mail = User.query.filter_by(email=email).first()
 
-    if user:
+    if user_name is None and user_mail is None:
+        new_user = User(
+            username=username,
+            email=email,
+            password=generate_password_hash(password, method="sha256"),
+            created_at=datetime.now(),
+        )
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        # logging.info(f"{username} - création de compte")
+        return redirect(url_for("login"))
+    else:
         # logging.error(f"{username} - {email} déjà associé à un compte.")
         flash("Un compte est déjà associé à cette adresse mail.")
         return redirect(url_for("signup"))
-
-    new_user = User(
-        username=username,
-        email=email,
-        password=generate_password_hash(password, method="sha256"),
-        created_at=datetime.now(),
-    )
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    # logging.info(f"{username} - création de compte")
-    return redirect(url_for("login"))
 
 
 @app.route("/logout")
@@ -252,7 +253,7 @@ def admin_login_post():
     if current_user.is_authenticated:
         logout_user()
 
-    username = request.form.get("username")
+    username = request.form.get("username").lower()
     password = request.form.get("password")
 
     user = User.query.filter_by(username=username).first()

@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="columns is-centered">
-    <div class="column is-12-mobile is-half-desktop">
-        <div class="card">
+
+<div class="columns is-centered is-vcentered">
+    <div class="column is-10-mobile is-offset-1-mobile is-5-desktop">
+        <div class="card" data-tilt data-tilt-scale="1.1" data-tilt-axis="x">
             <div class="card-content">
                 <div class="content">
                     <p class="title is-4">{{ username }}</p>
@@ -20,11 +21,15 @@
             </div>
             <footer class="card-footer">
                 <!-- AJOUTER UN MODAL POUR CONFIRMER LES CHOIX! -->
-                <a href="/profile/delete/images" class="card-footer-item">Supprimer toutes mes images</a>
-                <a href="/profile/delete/account" class="card-footer-item">Supprimer mon compte</a>
+                <a href="/profile/delete/images" class="card-footer-item has-text-danger">Supprimer toutes mes images</a>
+                <a href="/profile/delete/account" class="card-footer-item has-text-danger">Supprimer mon compte</a>
             </footer>
         </div>
     </div>
+    <div class="column is-5 is-offset-1">
+        <img class="img-index" src="https://storage.googleapis.com/model-chef-oeuvre/static/img/3D-min.png" alt="3D">
+    </div>
 </div>
+
 
 {% endblock %}

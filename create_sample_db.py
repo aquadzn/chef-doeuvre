@@ -12,8 +12,8 @@ def main():
     db.create_all()
 
     admin_user = User(
-        username=config.ADMIN_USERNAME,
-        email=config.ADMIN_MAIL,
+        username=config.ADMIN_USERNAME.lower(),
+        email=config.ADMIN_MAIL.lower(),
         password=generate_password_hash(config.ADMIN_PWD, method="sha256"),
         created_at=datetime.now(),
     )
@@ -27,8 +27,8 @@ def main():
 
     for i in range(len(usernames)):
         test_user = User(
-            username=usernames[i],
-            email=f"{usernames[i]}@mail.com",
+            username=usernames[i].lower(),
+            email=f"{usernames[i]}@mail.com".lower(),
             password=generate_password_hash("azerty", method="sha256"),
             created_at=datetime.now(),
         )
