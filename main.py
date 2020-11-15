@@ -1,4 +1,3 @@
-import requests as r
 import os
 import argparse
 
@@ -446,22 +445,16 @@ def upload():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
 
-            file_b = file
-
             upload_blob(
                 source=file,
                 destination_blob_name=f"{current_user.username}/{filename}",
             )
             # logging.info(f"{current_user.username} - {filename} sauvegardé")
-            file.seek(0)
-            response = r.post(
-                url=config.CLOUD_FUNCTION_URL,  # URL Cloud Functions
-                headers={"Content-Type": "application/octet-stream"},
-                data=file_b.stream,
-            ).json()
 
-            label = response["label"].capitalize().replace("_", " ")
-            confidence = response["confidence"]
+            label, label_idx, preds = learner.predict(PILImage.create(file.stream))
+            label = label.capitalize().replace("_", " ")
+            preds = preds.numpy()
+            confidence = round(preds[label_idx] * 100, 2)
 
             new_file = File(
                 username=current_user.username,
