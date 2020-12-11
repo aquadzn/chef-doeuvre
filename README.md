@@ -47,7 +47,7 @@ make build_docker
 make deploy_cloud_functions FUNCTION_NAME=model-chef-oeuvre
 ```
 
-**Grab the URL** of the function and place it in the *url* parameter for the POST request in `main_gcp.py` arround line 408
+**Grab the URL** of the function using `make get_cloud_functions_url` and assign it to **CLOUD_FUNCTION_URL** in *config.py* line 6.
 
 ```bash
 # Deploy image to GCR

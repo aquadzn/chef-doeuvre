@@ -4,6 +4,8 @@ BUCKET_NAME=uploads-chef-oeuvre
 CLOUD_RUN_NAME=app-chef-oeuvre
 IMAGE_NAME=image-chef-oeuvre
 FUNCTION_NAME=model-chef-oeuvre
+REGION=us-east1
+
 
 setup:
 	pip install -r requirements.txt
@@ -38,9 +40,14 @@ deploy_cloud_functions:
 		--entry-point=run \
 		--runtime=python38 \
 		--memory=1024MB \
+		--timeout=60 \
 		--trigger-http \
-		--region=us-east1 \
+		--region=$(REGION) \
 		--allow-unauthenticated
+
+
+get_cloud_functions_url:
+	gcloud functions describe $(FUNCTION_NAME) --region $(REGION) | grep -o 'https://.*$(FUNCTION_NAME)'
 
 
 deploy_cloud_image:
@@ -52,17 +59,17 @@ deploy_cloud_run:
 		--image gcr.io/ml-dl-77/$(IMAGE_NAME) \
 		--platform=managed \
 		--allow-unauthenticated \
-		--region=us-east1 \
+		--region=$(REGION) \
 		--concurrency=1 \
 		--memory=2Gi
 
 
 delete_cloud_run:
-	gcloud run services delete $(CLOUD_RUN_NAME) --platform=managed --region=us-east1
+	gcloud run services delete $(CLOUD_RUN_NAME) --platform=managed --region=$(REGION)
 
 
 delete_cloud_functions:
-	gcloud functions delete $(FUNCTION_NAME) --region=us-east1
+	gcloud functions delete $(FUNCTION_NAME) --region=$(REGION)
 
 
 delete_cloud_image:
@@ -70,8 +77,8 @@ delete_cloud_image:
 
 
 delete_all:
-	gcloud run services delete $(CLOUD_RUN_NAME) --platform=managed --region=us-east1
-	gcloud functions delete $(FUNCTION_NAME) --region=us-east1
+	gcloud run services delete $(CLOUD_RUN_NAME) --platform=managed --region=$(REGION)
+	gcloud functions delete $(FUNCTION_NAME) --region=$(REGION)
 	gcloud container images delete --force-delete-tags gcr.io/ml-dl-77/$(IMAGE_NAME)
 
 

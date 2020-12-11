@@ -25,6 +25,111 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
+TRAD_LABELS = {
+    "apple_pie": "Tarte aux pommes",
+    "baby_back_ribs": "Côtes levées de porc",
+    "baklava": "Baklava",
+    "beef_carpaccio": "Carpaccio de boeuf",
+    "beef_tartare": "Tartare de boeuf",
+    "beet_salad": "Salade de betteraves",
+    "beignets": "Beignets",
+    "bibimbap": "Bibimbap",
+    "bread_pudding": "Pouding au pain",
+    "breakfast_burrito": "Petit déjeuner burrito",
+    "bruschetta": "Bruschetta",
+    "caesar_salad": "Salade César",
+    "cannoli": "Cannoli",
+    "caprese_salad": "Salade Caprese",
+    "carrot_cake": "Gâteau à la carotte",
+    "ceviche": "Ceviche",
+    "cheesecake": "Cheesecake",
+    "cheese_plate": "Assiette de fromage",
+    "chicken_curry": "Poulet au curry",
+    "chicken_quesadilla": "Quesadilla de poulet",
+    "chicken_wings": "Ailes de poulet",
+    "chocolate_cake": "Gateau au chocolat",
+    "chocolate_mousse": "Mousse au chocolat",
+    "churros": "Churros",
+    "clam_chowder": "Chaudrée de palourdes",
+    "club_sandwich": "Club sandwich",
+    "crab_cakes": "Beignets de crabe",
+    "creme_brulee": "Crème brulée",
+    "croque_madame": "Croque Madame",
+    "cup_cakes": "Cupcakes",
+    "deviled_eggs": "Oeufs farcis",
+    "donuts": "Donuts",
+    "dumplings": "Dumplings",
+    "edamame": "Edamame",
+    "eggs_benedict": "Oeufs Bénédicte",
+    "escargots": "Escargots",
+    "falafel": "Falafel",
+    "filet_mignon": "Filet mignon",
+    "fish_and_chips": "Poisson et frites",
+    "foie_gras": "Foie gras",
+    "french_fries": "Frites",
+    "french_onion_soup": "Soupe à l'oignon française",
+    "french_toast": "Pain perdu",
+    "fried_calamari": "Calmars frits",
+    "fried_rice": "Riz sauté",
+    "frozen_yogurt": "Yaourt glacé",
+    "garlic_bread": "Pain à l'ail",
+    "gnocchi": "Gnocchi",
+    "greek_salad": "Salade grecque",
+    "grilled_cheese_sandwich": "Sandwich au fromage fondu",
+    "grilled_salmon": "Saumon grillé",
+    "guacamole": "Guacamole",
+    "gyoza": "Gyoza",
+    "hamburger": "Hamburger",
+    "hot_and_sour_soup": "Soupe aigre-douce",
+    "hot_dog": "Hot-dog",
+    "huevos_rancheros": "Huevos rancheros",
+    "hummus": "Hoummous",
+    "ice_cream": "Crème glacée",
+    "lasagna": "Lasagne",
+    "lobster_bisque": "Bisque de homard",
+    "lobster_roll_sandwich": "Sandwich roulé au homard",
+    "macaroni_and_cheese": "Macaroni au fromage",
+    "macarons": "Macarons",
+    "miso_soup": "Soupe miso",
+    "mussels": "Moules",
+    "nachos": "Nachos",
+    "omelette": "Omelette",
+    "onion_rings": "Rondelles d'oignon",
+    "oysters": "Huîtres",
+    "pad_thai": "Pad thaï",
+    "paella": "Paëlla",
+    "pancakes": "Crêpes",
+    "panna_cotta": "Panna cotta",
+    "peking_duck": "Canard laqué",
+    "pho": "Pho",
+    "pizza": "Pizza",
+    "pork_chop": "Côtelette de porc",
+    "poutine": "Poutine",
+    "prime_rib": "Côte de boeuf",
+    "pulled_pork_sandwich": "Sandwich au porc effiloché",
+    "ramen": "Ramen",
+    "ravioli": "Ravioli",
+    "red_velvet_cake": "Gâteau Red Velvet",
+    "risotto": "Risotto",
+    "samosa": "Samosa",
+    "sashimi": "Sashimi",
+    "scallops": "Coquilles Saint-Jacques",
+    "seaweed_salad": "Salade d'algues",
+    "shrimp_and_grits": "Crevettes et gruau",
+    "spaghetti_bolognese": "Spaghetti bolognaise",
+    "spaghetti_carbonara": "Spaghetti carbonara",
+    "spring_rolls": "Rouleaux de printemps",
+    "steak": "Steak",
+    "strawberry_shortcake": "Tarte sablée à la fraise",
+    "sushi": "Sushi",
+    "tacos": "Tacos",
+    "takoyaki": "Takoyaki",
+    "tiramisu": "Tiramisu",
+    "tuna_tartare": "Tartare de thon",
+    "waffles": "Gaufres",
+}
+
+
 app = Flask(__name__)
 
 
@@ -305,7 +410,7 @@ def delete_all():
     for b in blobs:
         b.delete()
 
-    bucket.delete_blobs(blobs=bucket.list_blobs(prefix=folder))
+    # bucket.delete_blobs(blobs=bucket.list_blobs(prefix=folder))
 
     File.query.filter_by(username=current_user.username).delete()
     db.session.commit()
@@ -416,7 +521,7 @@ def upload():
                 data=file.stream,
             ).json()
 
-            label = response["label"].capitalize().replace("_", " ")
+            label = TRAD_LABELS[response["label"]]
             confidence = response["confidence"]
 
             new_file = File(
