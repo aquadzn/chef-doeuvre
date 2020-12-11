@@ -8,3 +8,4 @@ __pycache__
 gcp-credentials.json
 config.py
 *.sqlite
+debug_db.py

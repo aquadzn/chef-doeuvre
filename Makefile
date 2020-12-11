@@ -6,7 +6,6 @@ IMAGE_NAME=image-chef-oeuvre
 FUNCTION_NAME=model-chef-oeuvre
 REGION=us-east1
 
-
 setup:
 	pip install -r requirements.txt
 

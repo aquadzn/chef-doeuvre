@@ -14,3 +14,4 @@ main.py
 Makefile
 README.md
 requirements.txt
+debug_db.py
