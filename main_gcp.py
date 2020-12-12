@@ -1,4 +1,4 @@
-# import logging
+import logging
 from datetime import datetime
 from tempfile import NamedTemporaryFile
 
@@ -248,13 +248,13 @@ def login_post():
     user = User.query.filter_by(username=username).first()
 
     if not user or not check_password_hash(user.password, password) or user.id == 1:
-        # logging.error(f"{username} - tentative de connexion échouée")
+        logging.error(f"{username} - tentative de connexion échouée")
         flash("Adresse mail ou mot de passe incorrecte. Veuillez réessayez.")
         return redirect(url_for("login"))
 
     login_user(user, remember=remember)
 
-    # logging.info(f"{username} - connexion réussie")
+    logging.info(f"{username} - connexion réussie")
     return redirect(url_for("profile"))
 
 
@@ -284,10 +284,10 @@ def signup_post():
         db.session.add(new_user)
         db.session.commit()
 
-        # logging.info(f"{username} - création de compte")
+        logging.info(f"{username} - création de compte")
         return redirect(url_for("login"))
     else:
-        # logging.error(f"{username} - {email} déjà associé à un compte.")
+        logging.error(f"{username} - {email} déjà associé à un compte.")
         flash("Un compte est déjà associé à cette adresse mail.")
         return redirect(url_for("signup"))
 
@@ -295,7 +295,7 @@ def signup_post():
 @app.route("/logout")
 @login_required
 def logout():
-    # logging.info(f"{current_user.username} - déconnexion")
+    logging.info(f"{current_user.username} - déconnexion")
     logout_user()
     return redirect(url_for("index"))
 
@@ -320,13 +320,13 @@ def admin_login_post():
     user = User.query.filter_by(username=username).first()
 
     if not user or not check_password_hash(user.password, password) or user.id != 1:
-        # # logging.error(f"{username} - tentative de connexion échouée")
+        logging.error(f"{username} - ATTENTION TENTATIVE DE CONNEXION ADMIN")
         flash("Vous n'avez pas accès à cette partie du site.")
         return redirect(url_for("login"))  # auth.admin_login
 
     login_user(user)
 
-    # # logging.info(f"{username} - connexion réussie")
+    logging.info(f"{username} - connexion réussie")
     return redirect(url_for("admin_index"))
 
 
@@ -362,7 +362,7 @@ def delete_user(user_id):
         User.query.filter_by(id=user_id).delete()
         db.session.commit()
 
-        # logging.info(f"admin - utilisateur #{user_id} supprimé.")
+        logging.info(f"admin - utilisateur #{user_id} supprimé.")
         flash("Utilisateur supprimée.")
         return redirect(url_for("admin_dashboard"))
 
@@ -377,12 +377,12 @@ def delete_file(file_id):
         file_row = File.query.filter_by(id=file_id).first()
 
         delete_blob(f"{file_row.username}/{file_row.filename}")
-        # logging.info(f"admin - {filepath} supprimé.")
+        logging.info(f"admin - {file_row.username}/{file_row.filename} supprimé.")
 
         File.query.filter_by(id=file_id).delete()
         db.session.commit()
 
-        # logging.info("admin - record SQL #{file_id} supprimé.")
+        logging.info("admin - record SQL #{file_id} supprimé.")
         flash("Image supprimée.")
         return redirect(url_for("admin_dashboard"))
 
@@ -394,7 +394,7 @@ def delete_file(file_id):
 @login_required
 def profile():
 
-    # logging.info(f"{current_user.username} - accès à son profil")
+    logging.info(f"{current_user.username} - accès à son profil")
     return render_template(
         "profile.html", username=current_user.username, email=current_user.email
     )
@@ -415,7 +415,7 @@ def delete_all():
     File.query.filter_by(username=current_user.username).delete()
     db.session.commit()
 
-    # logging.info(f"{current_user.username} - record SQL #{post_id} supprimé.")
+    logging.info(f"{current_user.username} - tous les record SQL supprimés.")
     flash("Toutes vos images ont été supprimées.")
     return redirect(url_for("images"))
 
@@ -443,7 +443,7 @@ def delete_account():
 @login_required
 def images():
 
-    # logging.info(f"{current_user.username} - accès à ses images")
+    logging.info(f"{current_user.username} - accès à ses images")
     files = File.query.filter_by(username=current_user.username).all()
 
     return render_template("images.html", files=files)
@@ -469,12 +469,12 @@ def delete(post_id):
     delete_blob(
         f"{current_user.username}/{File.query.filter_by(id=post_id).first().filename}"
     )
-    # logging.info(f"{current_user.username} - {filepath} supprimé.")
+    logging.info(f"{current_user.username} - image {post_id} supprimé.")
 
     File.query.filter_by(id=post_id).delete()
     db.session.commit()
 
-    # logging.info(f"{current_user.username} - record SQL #{post_id} supprimé.")
+    logging.info(f"{current_user.username} - record SQL #{post_id} supprimé.")
     flash("Image supprimée.")
     return redirect(url_for("images"))
 
@@ -483,7 +483,7 @@ def delete(post_id):
 @login_required
 def analysis():
 
-    # logging.info(f"{current_user.username} - accès à ses analyses")
+    logging.info(f"{current_user.username} - accès à ses analyses")
     return render_template("analysis.html", username=current_user.username)
 
 
@@ -494,14 +494,14 @@ def upload():
     if request.method == "POST":
 
         if "image" not in request.files:
-            # logging.error(f"{current_user.username} - erreur d'envoi de fichier")
+            logging.error(f"{current_user.username} - erreur d'envoi de fichier")
             flash("Pas de fichier!", "error")
             return redirect(url_for("upload"))
 
         file = request.files.get("image")
 
         if file.filename == "":
-            # logging.error(f"{current_user.username} - erreur d'envoi de fichier")
+            logging.error(f"{current_user.username} - erreur nom de fichier")
             flash("Pas de fichier!", "error")
             return redirect(url_for("upload"))
 
@@ -512,7 +512,7 @@ def upload():
                 source=file,
                 destination_blob_name=f"{current_user.username}/{filename}",
             )
-            # logging.info(f"{current_user.username} - {filename} sauvegardé")
+            logging.info(f"{current_user.username} - {filename} sauvegardé")
 
             file.seek(0)
             response = r.post(
@@ -535,7 +535,7 @@ def upload():
             db.session.add(new_file)
             db.session.commit()
 
-            # logging.info(f"{current_user.username} - record SQL ajouté")
+            logging.info(f"{current_user.username} - record SQL ajouté")
             # flash("Fichier envoyé!", "success")
             flash(f"Détecté: {label} ({confidence}%)", "success")
             return redirect(request.url)
