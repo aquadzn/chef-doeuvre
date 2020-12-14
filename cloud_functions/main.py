@@ -1,3 +1,4 @@
+import os
 from flask import jsonify
 from google.cloud import storage
 from fastai.learner import load_learner
@@ -17,27 +18,9 @@ def run(request):
     label, label_idx, preds = learner.predict(PILImage.create(files))
     preds = preds.numpy()
 
+    os.remove("/tmp/model.pkl")
+
     return jsonify(
         label=label,
         confidence=round(preds[label_idx] * 100, 2),
     )
-
-
-# URL version
-# --------------
-# def run(request):
-
-#     response = r.get(
-#         request.args["image"],
-#         headers={
-#             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) \
-# AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
-#         },
-#     )
-
-#     label, label_idx, preds = learner.predict(PILImage.create(response.content))
-
-#     return {
-#         "label": f"{label.capitalize().replace('_', ' ')}",
-#         "confidence": f"{preds[label_idx] * 100:.2f}%",
-#     }
