@@ -3,15 +3,21 @@ __pycache__/
 **/__pycache__
 .pytest_cache/
 */.pytest_cache/
+
 .vscode/
 
 tests/
 static/
 cloud_functions/
 
-*.sqlite
 main.py
+debug_db.py
+
 Makefile
+*.sqlite
 README.md
 requirements.txt
-debug_db.py
+
+training/
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/

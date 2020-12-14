@@ -3,9 +3,15 @@ __pycache__
 **/__pycache__
 .pytest_cache
 */.pytest_cache
+
 .vscode
+
 *.pkl
-gcp-credentials.json
-config.py
 *.sqlite
+config.py
 debug_db.py
+gcp-credentials.json
+
+training/food-101
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
