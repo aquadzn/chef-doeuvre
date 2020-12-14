@@ -2,71 +2,80 @@
 
 {% block content %}
 <div class="block">
-    <p class="title is-2 multiline">Une analyse à faire, <i>{{ username }}</i> ?</p>
-</div>
-<!-- <br> -->
-<div class="columns is-vcentered is-desktop">
-    <div class="column is-half">
-        <div class="box">
-            <article class="message">
-                <div class="message-body">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Pellentesque risus mi</strong>,
-                    tempus
-                    quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus
-                    diam, et dictum <a>felis venenatis</a> efficitur. Aenean ac <em>eleifend lacus</em>, in mollis
-                    lectus.
-                    Donec sodales, arcu et sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a
-                    neque.
-                    Donec dui urna, vehicula et sem eget, facilisis sodales sem.
-                </div>
-            </article>
-        </div>
-    </div>
-    <div class="column is-half">
-        <canvas id="myChart"></canvas>
-    </div>
+    <p class="title is-2 multiline"><i>{{ username }}</i>, voici vos résultats.</p>
 </div>
 
+{% if labels|length %}
+<div class="columns is-centered">
+    <div class="column">
+        <div>
+            <canvas id="myChart" style="width: 80%;"></canvas>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 <script>
+    var labelsFlask = {{ labels|tojson }};
+    var predsFlask = {{ preds|tojson }};
+    
+    var dynamicColors = function () {
+        var array = [];
+        for (var i = 0; i < predsFlask.length; i++) {            
+            var r = Math.floor(Math.random() * 255);
+            var g = Math.floor(Math.random() * 255);
+            var b = Math.floor(Math.random() * 255);
+            array.push("rgba(" + r + "," + g + "," + b + ", 0.7)");
+        };
+        return array
+    };
+
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'polarArea',
         data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            labels: labelsFlask,
             datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
+                label: 'My dataset',
+                data: predsFlask,
+                backgroundColor: dynamicColors()
             }]
         },
         options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
+            scale: {
+                ticks: {
+                    fontColor: '#000',
+                    fontSize: 18,
+                    beginAtZero: true
+                },
+                reverse: false
+            },
+            pointLabels: {
+                fontSize: 18
+            },
+            legend: {
+                position: 'bottom',
+                labels: {
+                    boxWidth: 14,
+                    fontSize: 18,
+                    fontFamily: 'Helvetica',
+
+                }
+            },
+            animation: {
+                animateRotate: false,
+                animateScale: true
             }
         }
     });
 </script>
+
+{% else %}
+
+<div class="block">
+    <p class="subtitle">Pas d'image sur votre compte</p>
+</div>
+
+{% endif %}
 
 {% endblock %}

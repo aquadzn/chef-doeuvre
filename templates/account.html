@@ -12,17 +12,21 @@
                 </div>
 
                 <div class="content">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Phasellus nec iaculis mauris. <a>@bulmaio</a>.
-                    <a href="#">#css</a> <a href="#">#responsive</a>
-                    <br>
-                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                    <time id="time"></time>
                 </div>
             </div>
             <footer class="card-footer">
                 <!-- AJOUTER UN MODAL POUR CONFIRMER LES CHOIX! -->
-                <a href="/profile/delete/images" class="card-footer-item has-text-danger">Supprimer toutes mes images</a>
-                <a href="/profile/delete/account" class="card-footer-item has-text-danger">Supprimer mon compte</a>
+                <a href="/account/delete/images" class="card-footer-item has-text-danger">Supprimer toutes mes images</a>
+                <a href="/account/delete/account" class="card-footer-item has-text-danger">Supprimer mon compte</a>
+                {% with success = get_flashed_messages(category_filter=["success"]) %}
+                {% if success %}
+                    <div class="notification is-success">
+                        <button class="delete"></button>
+                        {{ success[0] }}
+                    </div>
+                {% endif %}
+                {% endwith %}
             </footer>
         </div>
     </div>
@@ -31,5 +35,9 @@
     </div>
 </div>
 
+<script>
+    let today = new Date().toLocaleDateString()
+    document.getElementById("time").innerHTML = today;
+</script>
 
 {% endblock %}

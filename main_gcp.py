@@ -255,7 +255,7 @@ def login_post():
     login_user(user, remember=remember)
 
     logging.info(f"{username} - connexion réussie")
-    return redirect(url_for("profile"))
+    return redirect(url_for("account"))
 
 
 @app.route("/signup")
@@ -390,17 +390,17 @@ def delete_file(file_id):
 # ------------------- ACTIONS -------------------
 
 
-@app.route("/profile")
+@app.route("/account")
 @login_required
-def profile():
+def account():
 
-    logging.info(f"{current_user.username} - accès à son profil")
+    logging.info(f"{current_user.username} - accès à son compte")
     return render_template(
-        "profile.html", username=current_user.username, email=current_user.email
+        "account.html", username=current_user.username, email=current_user.email
     )
 
 
-@app.route("/profile/delete/images")
+@app.route("/account/delete/images")
 @login_required
 def delete_all():
 
@@ -416,11 +416,11 @@ def delete_all():
     db.session.commit()
 
     logging.info(f"{current_user.username} - tous les record SQL supprimés.")
-    flash("Toutes vos images ont été supprimées.")
-    return redirect(url_for("images"))
+    flash("Toutes vos images ont été supprimées.", "success")
+    return redirect(url_for("account"))
 
 
-@app.route("/profile/delete/account")
+@app.route("/account/delete/account")
 @login_required
 def delete_account():
 
@@ -482,9 +482,19 @@ def delete(post_id):
 @app.route("/analysis")
 @login_required
 def analysis():
+    labels = (
+        db.session.query(File.label).filter_by(username=current_user.username).all()
+    )
+    preds = (
+        db.session.query(File.confidence)
+        .filter_by(username=current_user.username)
+        .all()
+    )
 
     logging.info(f"{current_user.username} - accès à ses analyses")
-    return render_template("analysis.html", username=current_user.username)
+    return render_template(
+        "analysis.html", username=current_user.username, labels=labels, preds=preds
+    )
 
 
 @app.route("/upload", methods=["GET", "POST"])
@@ -523,6 +533,10 @@ def upload():
 
             label = TRAD_LABELS[response["label"]]
             confidence = response["confidence"]
+
+            # Cas où la prédiction est incertaine selon un taux purement arbitraire
+            if confidence < 50.0:
+                label = f"Incertain - {label}"
 
             new_file = File(
                 username=current_user.username,

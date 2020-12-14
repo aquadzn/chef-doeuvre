@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mon projet Chef d'Oeuvre</title>
+    <title>Mon Gueuleton</title>
     <link rel="shortcut icon" href="https://storage.googleapis.com/model-chef-oeuvre/static/img/favicon.ico" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
@@ -15,7 +15,6 @@
 </head>
 
 <body>
-    <!-- Illustration from <a href="https://icons8.com/">Icons8</a> -->
     <section class="hero is-fullheight">
         <div class="hero-head">
             <nav class="navbar is-spaced">
@@ -39,8 +38,8 @@
                                 Accueil
                             </a>
                             {% if current_user.is_authenticated and current_user.id != 1 %}
-                            <a href="{{ url_for('profile') }}" class="navbar-item multiline-navbar px-4">
-                                Mon profil
+                            <a href="{{ url_for('account') }}" class="navbar-item multiline-navbar px-4">
+                                Mon compte
                             </a>
                             <a href="{{ url_for('images') }}" class="navbar-item multiline-navbar px-4">
                                 Mes images
