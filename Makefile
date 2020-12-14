@@ -47,6 +47,7 @@ deploy_cloud_functions:	## Deploy AI function to Google Cloud Functions
 		--memory=1024MB \
 		--timeout=60 \
 		--trigger-http \
+		--max-instances 10 \
 		--region=$(REGION) \
 		--allow-unauthenticated
 
