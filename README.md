@@ -2,7 +2,35 @@
 
 ---
 
-### Setup:
+## Installation
+
+### Makefile references
+
+```bash
+Usage:
+  make 
+
+Utility
+  help                      Display help
+  setup                     Install Python requirements
+  lint                      Lint Python files and check for potential security issues.
+  test                      Run Python tests (no warnings)
+  run                       Run local Flask app
+  build_docker              Build local Docker image
+  deploy_cloud_functions    Deploy AI function to Google Cloud Functions
+  get_cloud_functions_url   Grab Google Cloud Functions URL
+  deploy_cloud_image        Deploy app image to Google Container Registry
+  deploy_cloud_run          Deploy app to Google Cloud Run
+  delete_cloud_run          Delete Cloud Run service
+  delete_cloud_functions    Delete Cloud Functions
+  delete_cloud_image        Delete image on Google Container Registry
+  delete_all                Delete all Google stuff
+  create_bucket             Create a Google Storage Bucket
+  clean_bucket              Clean a Google Storage Bucket
+```
+
+
+### Setup
 
 Create a config.py with this structure:
 
@@ -27,11 +55,11 @@ then
 # Install local dependencies
 make setup
 
-# Lint, format and check for security issues in Python files. Also remove cache folders
-make lint
-
 # Run Python tests
 make test
+
+# Lint, format and check for security issues in Python files. Also remove cache folders
+make lint
 
 # Run Flask app locally (opt args: HOST, PORT)
 make run
